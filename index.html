@@ -883,6 +883,7 @@
     });
 
     function exibirTreino(data) {
+        console.log('data', data);
         const resultDiv = document.getElementById('result');
         
         let html = `
@@ -971,9 +972,6 @@
 
         html += `
             <div class="actions">
-                <button class="btn" onclick="copiarTreino()">
-                    📋 Copiar JSON Completo
-                </button>
                 <button class="btn" onclick="compartilharTreino()">
                     🔗 Compartilhar Link do Treino
                 </button>
@@ -1041,7 +1039,6 @@
     }
 
     async function carregarHistorico() {
-        console.log('currentUser: ',currentUser)
         
         if (!currentUser && !currentUser.id) return;
 
