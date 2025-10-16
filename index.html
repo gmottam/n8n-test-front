@@ -7,10 +7,8 @@
     <meta name="description" content="Gere seu treino de academia personalizado em segundos usando Inteligência Artificial">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💪</text></svg>">
     
-    <!-- CSS -->
     <link rel="stylesheet" href="css/main.css">
     
-    <!-- ⚙️ CLERK: Substitua pela sua Publishable Key -->
     <script
       async
       crossorigin="anonymous"
@@ -29,22 +27,18 @@
             <div class="user-menu" id="userMenu"></div>
         </div>
 
-        <!-- Área que requer autenticação -->
         <div id="authRequired" class="card auth-required">
             <h2>🔐 Faça login para continuar</h2>
             <p>Entre para gerar seus treinos personalizados e acessar seu histórico</p>
             <button class="btn" id="signInBtn">Entrar / Criar Conta</button>
         </div>
 
-        <!-- Conteúdo autenticado -->
         <div id="authenticatedContent" style="display: none;">
-            <!-- Tabs -->
             <div class="tabs">
                 <button class="tab active" onclick="switchTab('gerar')">🏋️ Gerar Treino</button>
                 <button class="tab" onclick="switchTab('historico')">📚 Meus Treinos</button>
             </div>
 
-            <!-- Tab: Gerar Treino -->
             <div id="tab-gerar" class="tab-content active">
                 <div class="card" id="formCard">
                     <form id="treinoForm">
@@ -148,7 +142,6 @@
                 <div class="card result" id="result"></div>
             </div>
 
-            <!-- Tab: Histórico -->
             <div id="tab-historico" class="tab-content">
                 <div class="card">
                     <h2 style="margin-bottom: 20px;">📚 Meus Treinos</h2>
@@ -162,7 +155,6 @@
         </div>
     </div>
 
-    <!-- JavaScript -->
     <script src="js/main.js"></script>
 </body>
 </html>

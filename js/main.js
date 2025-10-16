@@ -1,14 +1,11 @@
-// Configurações da API
 const WEBHOOK_URL = 'https://gmottam.app.n8n.cloud/webhook-test/webhook-test/gerar-treino';
 const HISTORICO_URL = 'https://gmottam.app.n8n.cloud/webhook-test/meus-treinos';
 
-// Variáveis globais
 let clerk;
 let currentUser = null;
 let clerkInitialized = false;
 const restricoes = [];
 
-// Inicialização
 window.addEventListener('load', async () => {
     clerk = window.Clerk;
     
@@ -39,7 +36,6 @@ window.addEventListener('load', async () => {
     }
 });
 
-// Event Listeners
 function setupEventListeners() {
     document.getElementById('signInBtn')?.addEventListener('click', () => {
         console.log('🔐 Abrindo login...');
@@ -64,7 +60,6 @@ function setupEventListeners() {
     setupChipsInput();
 }
 
-// Autenticação
 function mostrarConteudoAutenticado() {
     document.getElementById('authRequired').style.display = 'none';
     document.getElementById('authenticatedContent').style.display = 'block';
@@ -99,7 +94,6 @@ function showAuthError(title, message) {
     `;
 }
 
-// Tabs
 function switchTab(tabName) {
     document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
     document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
@@ -112,7 +106,6 @@ function switchTab(tabName) {
     }
 }
 
-// Tornar função global
 window.switchTab = switchTab;
 window.fazerLogout = fazerLogout;
 window.compartilharTreino = compartilharTreino;
@@ -121,7 +114,6 @@ window.compartilharTreinoHistorico = compartilharTreinoHistorico;
 window.adicionarChip = adicionarChip;
 window.removerChip = removerChip;
 
-// Chips Input
 function setupChipsInput() {
     const restricoesInput = document.getElementById('restricoesInput');
     const restricoesContainer = document.getElementById('restricoesContainer');
@@ -157,7 +149,6 @@ function removerChip(button, texto) {
     button.parentElement.remove();
 }
 
-// Formulário
 async function handleFormSubmit(e) {
     e.preventDefault();
 
@@ -207,7 +198,7 @@ async function handleFormSubmit(e) {
     }
 }
 
-// UI States
+
 function showLoading() {
     document.getElementById('formCard').style.display = 'none';
     document.getElementById('loading').classList.add('active');
@@ -224,7 +215,6 @@ function showError(message) {
     document.getElementById('error').classList.add('active');
 }
 
-// Exibir Treino
 function exibirTreino(data) {
     console.log('data', data);
     const resultDiv = document.getElementById('result');
@@ -332,7 +322,6 @@ function exibirTreino(data) {
     setTimeout(() => carregarHistorico(), 1000);
 }
 
-// Ações do Treino
 function compartilharTreino() {
     if (!window.treinoAtual?.id_treino) {
         alert('❌ Gere um treino primeiro!');
@@ -375,7 +364,6 @@ function novoTreino() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// Histórico
 async function carregarHistorico() {
     if (!currentUser?.id) return;
 

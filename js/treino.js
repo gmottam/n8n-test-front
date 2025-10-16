@@ -1,7 +1,6 @@
-// Configuração da API
 const API_URL = 'https://gmottam.app.n8n.cloud/webhook-test/consultar-treino';
 
-// Inicialização
+
 document.addEventListener('DOMContentLoaded', () => {
     const urlParams = new URLSearchParams(window.location.search);
     const idTreino = urlParams.get('id');
@@ -13,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Buscar treino
+
 async function buscarTreino(id) {
     try {
 
@@ -38,7 +37,6 @@ async function buscarTreino(id) {
     }
 }
 
-// Exibir treino
 function exibirTreino(data) {
     const resultDiv = document.getElementById('result');
 
@@ -130,11 +128,9 @@ function exibirTreino(data) {
     resultDiv.innerHTML = html;
     document.getElementById('actions').style.display = 'block';
 
-    // Salvar dados para compartilhar
     window.treinoAtual = data;
 }
 
-// Mostrar erro
 function mostrarErro(mensagem) {
     const errorDiv = document.getElementById('error');
     errorDiv.innerHTML = `
@@ -144,7 +140,6 @@ function mostrarErro(mensagem) {
     errorDiv.style.display = 'block';
 }
 
-// Compartilhar
 function compartilhar() {
     const url = window.location.href;
     const texto = `Confira meu treino personalizado gerado por IA! 💪`;
@@ -161,7 +156,6 @@ function compartilhar() {
     }
 }
 
-// Copiar link
 function copiarLink() {
     const url = window.location.href;
     navigator.clipboard.writeText(url).then(() => {
@@ -169,6 +163,5 @@ function copiarLink() {
     });
 }
 
-// Tornar funções globais
 window.compartilhar = compartilhar;
 window.copiarLink = copiarLink;
