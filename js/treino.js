@@ -4,7 +4,7 @@ const API_URL = 'https://gmottam.app.n8n.cloud/webhook-test/consultar-treino';
 // Inicialização
 document.addEventListener('DOMContentLoaded', () => {
     const urlParams = new URLSearchParams(window.location.search);
-    const idTreino = urlParams.get('id_treino');
+    const idTreino = urlParams.get('id');
 
     if (!idTreino) {
         mostrarErro('❌ ID do treino não informado na URL');
