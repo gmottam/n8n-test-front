@@ -1,0 +1,718 @@
+<artifact identifier="treino-ia-interface" type="text/html" title="Interface Web - Gerador de Treino com IA">
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💪 Gerador de Treino com IA</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+        color: #333;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .header {
+        text-align: center;
+        color: white;
+        margin-bottom: 40px;
+        padding: 20px;
+    }
+
+    .header h1 {
+        font-size: 3rem;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .header p {
+        font-size: 1.2rem;
+        opacity: 0.95;
+    }
+
+    .card {
+        background: white;
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        margin-bottom: 30px;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group.full-width {
+        grid-column: 1 / -1;
+    }
+
+    label {
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #555;
+        font-size: 0.95rem;
+    }
+
+    input, select, textarea {
+        padding: 12px 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: all 0.3s;
+        font-family: inherit;
+    }
+
+    input:focus, select:focus, textarea:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .radio-group {
+        display: flex;
+        gap: 20px;
+    }
+
+    .radio-option {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+    }
+
+    .radio-option input[type="radio"] {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+    }
+
+    .chips-input {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 10px;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        min-height: 50px;
+    }
+
+    .chip {
+        background: #667eea;
+        color: white;
+        padding: 6px 12px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.9rem;
+    }
+
+    .chip button {
+        background: none;
+        border: none;
+        color: white;
+        cursor: pointer;
+        font-size: 1.2rem;
+        padding: 0;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .chips-input input {
+        flex: 1;
+        border: none;
+        padding: 8px;
+        min-width: 150px;
+    }
+
+    .chips-input input:focus {
+        outline: none;
+        box-shadow: none;
+    }
+
+    .btn {
+        padding: 16px 40px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    .btn:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    .loading {
+        display: none;
+        text-align: center;
+        padding: 40px;
+    }
+
+    .loading.active {
+        display: block;
+    }
+
+    .spinner {
+        width: 50px;
+        height: 50px;
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #667eea;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 20px;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .result {
+        display: none;
+    }
+
+    .result.active {
+        display: block;
+    }
+
+    .success-message {
+        background: #4caf50;
+        color: white;
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 30px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        font-size: 1.1rem;
+    }
+
+    .treino-overview {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .overview-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 12px;
+        text-align: center;
+    }
+
+    .overview-card .label {
+        font-size: 0.9rem;
+        opacity: 0.9;
+        margin-bottom: 8px;
+    }
+
+    .overview-card .value {
+        font-size: 1.8rem;
+        font-weight: bold;
+    }
+
+    .treino-dia {
+        background: #f8f9fa;
+        border-radius: 12px;
+        padding: 25px;
+        margin-bottom: 20px;
+        border-left: 4px solid #667eea;
+    }
+
+    .treino-dia h3 {
+        color: #667eea;
+        margin-bottom: 8px;
+        font-size: 1.5rem;
+    }
+
+    .treino-dia .foco {
+        color: #666;
+        font-size: 1rem;
+        margin-bottom: 20px;
+    }
+
+    .exercicio {
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 12px;
+        border-left: 3px solid #764ba2;
+    }
+
+    .exercicio-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        margin-bottom: 10px;
+    }
+
+    .exercicio-nome {
+        font-weight: 600;
+        font-size: 1.1rem;
+        color: #333;
+    }
+
+    .exercicio-detalhes {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+        font-size: 0.9rem;
+    }
+
+    .detalhe {
+        background: #e8eaf6;
+        padding: 4px 12px;
+        border-radius: 6px;
+        color: #5e35b1;
+        font-weight: 500;
+    }
+
+    .exercicio-dica {
+        background: #fff3e0;
+        padding: 10px;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        color: #e65100;
+        border-left: 3px solid #ff9800;
+    }
+
+    .musculos {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+    }
+
+    .musculo-tag {
+        background: #c5cae9;
+        color: #3f51b5;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 0.85rem;
+    }
+
+    .observacoes {
+        background: #e8f5e9;
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 30px;
+    }
+
+    .observacoes h3 {
+        color: #2e7d32;
+        margin-bottom: 15px;
+    }
+
+    .observacao-item {
+        margin-bottom: 15px;
+    }
+
+    .observacao-item strong {
+        color: #1b5e20;
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .actions {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+        margin-top: 30px;
+    }
+
+    .btn-secondary {
+        background: white;
+        color: #667eea;
+        border: 2px solid #667eea;
+    }
+
+    .btn-secondary:hover {
+        background: #667eea;
+        color: white;
+    }
+
+    .error {
+        background: #f44336;
+        color: white;
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        display: none;
+    }
+
+    .error.active {
+        display: block;
+    }
+
+    @media (max-width: 768px) {
+        .header h1 {
+            font-size: 2rem;
+        }
+
+        .card {
+            padding: 20px;
+        }
+
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💪 Gerador de Treino com IA</h1>
+            <p>Treino personalizado em segundos usando Inteligência Artificial</p>
+        </div>
+    <div class="card" id="formCard">
+        <form id="treinoForm">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="nome">Nome Completo *</label>
+                    <input type="text" id="nome" required placeholder="Ex: João Silva">
+                </div>
+
+                <div class="form-group">
+                    <label for="idade">Idade *</label>
+                    <input type="number" id="idade" min="16" max="100" required placeholder="Ex: 27">
+                </div>
+
+                <div class="form-group">
+                    <label for="peso">Peso (kg) *</label>
+                    <input type="number" id="peso" min="30" max="300" step="0.1" required placeholder="Ex: 75">
+                </div>
+
+                <div class="form-group">
+                    <label for="altura">Altura (cm) *</label>
+                    <input type="number" id="altura" min="100" max="250" required placeholder="Ex: 175">
+                </div>
+
+                <div class="form-group">
+                    <label>Sexo *</label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="sexo" value="masculino" required>
+                            <span>Masculino</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="sexo" value="feminino" required>
+                            <span>Feminino</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="objetivo">Objetivo *</label>
+                    <select id="objetivo" required>
+                        <option value="">Selecione...</option>
+                        <option value="ganho de massa">Ganho de Massa</option>
+                        <option value="perda de peso">Perda de Peso</option>
+                        <option value="definição">Definição Muscular</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="nivel">Nível de Experiência *</label>
+                    <select id="nivel" required>
+                        <option value="">Selecione...</option>
+                        <option value="iniciante">Iniciante</option>
+                        <option value="intermediário">Intermediário</option>
+                        <option value="avançado">Avançado</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="frequencia">Frequência Semanal *</label>
+                    <select id="frequencia" required>
+                        <option value="">Selecione...</option>
+                        <option value="3">3x por semana</option>
+                        <option value="4">4x por semana</option>
+                        <option value="5">5x por semana</option>
+                        <option value="6">6x por semana</option>
+                    </select>
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Restrições/Lesões (pressione Enter para adicionar)</label>
+                    <div class="chips-input" id="restricoesContainer">
+                        <input type="text" id="restricoesInput" placeholder="Ex: dor no joelho esquerdo">
+                    </div>
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="equipamentos">Equipamentos Disponíveis *</label>
+                    <select id="equipamentos" required>
+                        <option value="academia completa">Academia Completa</option>
+                        <option value="home gym">Home Gym</option>
+                        <option value="peso corporal">Apenas Peso Corporal</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit" class="btn">
+                🚀 Gerar Meu Treino Personalizado
+            </button>
+        </form>
+    </div>
+
+    <div class="card loading" id="loading">
+        <div class="spinner"></div>
+        <h3>🤖 IA está criando seu treino personalizado...</h3>
+        <p>Isso pode levar alguns segundos</p>
+    </div>
+
+    <div class="error" id="error"></div>
+
+    <div class="card result" id="result"></div>
+</div>
+
+<script>
+    // CONFIGURE SEU WEBHOOK AQUI
+    const WEBHOOK_URL = 'https://gmottam.app.n8n.cloud/webhook-test/webhook-test/gerar-treino';
+
+    // Sistema de chips para restrições
+    const restricoes = [];
+    const restricoesInput = document.getElementById('restricoesInput');
+    const restricoesContainer = document.getElementById('restricoesContainer');
+
+    restricoesInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const valor = restricoesInput.value.trim();
+            if (valor) {
+                restricoes.push(valor);
+                adicionarChip(valor);
+                restricoesInput.value = '';
+            }
+        }
+    });
+
+    function adicionarChip(texto) {
+        const chip = document.createElement('div');
+        chip.className = 'chip';
+        chip.innerHTML = `
+            ${texto}
+            <button type="button" onclick="removerChip(this, '${texto}')">×</button>
+        `;
+        restricoesContainer.insertBefore(chip, restricoesInput);
+    }
+
+    function removerChip(button, texto) {
+        const index = restricoes.indexOf(texto);
+        if (index > -1) {
+            restricoes.splice(index, 1);
+        }
+        button.parentElement.remove();
+    }
+
+    // Formulário
+    document.getElementById('treinoForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const formData = {
+            nome: document.getElementById('nome').value,
+            idade: parseInt(document.getElementById('idade').value),
+            peso: parseFloat(document.getElementById('peso').value),
+            altura: parseInt(document.getElementById('altura').value),
+            sexo: document.querySelector('input[name="sexo"]:checked').value,
+            objetivo: document.getElementById('objetivo').value,
+            nivel: document.getElementById('nivel').value,
+            frequencia_semanal: parseInt(document.getElementById('frequencia').value),
+            restricoes: restricoes,
+            equipamentos: [document.getElementById('equipamentos').value]
+        };
+
+        // UI
+        document.getElementById('formCard').style.display = 'none';
+        document.getElementById('loading').classList.add('active');
+        document.getElementById('error').classList.remove('active');
+        document.getElementById('result').classList.remove('active');
+
+        try {
+            const response = await fetch(WEBHOOK_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            });
+
+            if (!response.ok) {
+                throw new Error('Erro ao gerar treino');
+            }
+
+            const data = await response.json();
+            exibirTreino(data);
+
+        } catch (error) {
+            document.getElementById('error').textContent = '❌ Erro ao gerar treino. Tente novamente.';
+            document.getElementById('error').classList.add('active');
+            document.getElementById('formCard').style.display = 'block';
+        } finally {
+            document.getElementById('loading').classList.remove('active');
+        }
+    });
+
+    function exibirTreino(data) {
+        const resultDiv = document.getElementById('result');
+        
+        let html = `
+            <div class="success-message">
+                <span style="font-size: 2rem;">✅</span>
+                <div>
+                    <strong>${data.mensagem || 'Treino gerado com sucesso!'}</strong>
+                    <div style="font-size: 0.9rem; opacity: 0.9; margin-top: 5px;">
+                        ID: ${data.id_treino}
+                    </div>
+                </div>
+            </div>
+
+            <div class="treino-overview">
+                <div class="overview-card">
+                    <div class="label">IMC</div>
+                    <div class="value">${data.aluno.imc}</div>
+                </div>
+                <div class="overview-card">
+                    <div class="label">Objetivo</div>
+                    <div class="value">${data.aluno.objetivo}</div>
+                </div>
+                <div class="overview-card">
+                    <div class="label">Nível</div>
+                    <div class="value">${data.aluno.nivel}</div>
+                </div>
+                <div class="overview-card">
+                    <div class="label">Dias/Semana</div>
+                    <div class="value">${data.treino.length}</div>
+                </div>
+            </div>
+
+            <div class="observacoes">
+                <h3>📋 Observações Importantes</h3>
+                <div class="observacao-item">
+                    <strong>🔥 Aquecimento:</strong>
+                    ${data.observacoes_gerais.aquecimento}
+                </div>
+                <div class="observacao-item">
+                    <strong>🍎 Nutrição:</strong>
+                    ${data.observacoes_gerais.nutricao}
+                </div>
+                <div class="observacao-item">
+                    <strong>📈 Progressão:</strong>
+                    ${data.observacoes_gerais.progressao}
+                </div>
+                ${data.observacoes_gerais.cuidados_especiais !== 'Boa forma' ? `
+                    <div class="observacao-item">
+                        <strong>⚠️ Cuidados Especiais:</strong>
+                        ${data.observacoes_gerais.cuidados_especiais}
+                    </div>
+                ` : ''}
+            </div>
+        `;
+
+        data.treino.forEach(dia => {
+            html += `
+                <div class="treino-dia">
+                    <h3>${dia.dia}</h3>
+                    <div class="foco">${dia.foco} • ${dia.duracao_estimada}</div>
+            `;
+
+            dia.exercicios.forEach(ex => {
+                html += `
+                    <div class="exercicio">
+                        <div class="exercicio-header">
+                            <div class="exercicio-nome">${ex.ordem}. ${ex.nome}</div>
+                        </div>
+                        <div class="exercicio-detalhes">
+                            <span class="detalhe">📊 ${ex.series} séries</span>
+                            <span class="detalhe">🔄 ${ex.repeticoes} reps</span>
+                            <span class="detalhe">⏱️ ${ex.descanso} descanso</span>
+                        </div>
+                        <div class="exercicio-dica">
+                            💡 ${ex.dica_execucao}
+                        </div>
+                        <div class="musculos">
+                            ${ex.musculos_trabalhados.map(m => 
+                                `<span class="musculo-tag">${m}</span>`
+                            ).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `</div>`;
+        });
+
+        html += `
+            <div class="actions">
+                <button class="btn" onclick="copiarTreino()">
+                    📋 Copiar Treino
+                </button>
+                <button class="btn btn-secondary" onclick="novoTreino()">
+                    🔄 Gerar Novo Treino
+                </button>
+            </div>
+        `;
+
+        resultDiv.innerHTML = html;
+        resultDiv.classList.add('active');
+        
+        // Salvar treino para copiar
+        window.treinoAtual = data;
+    }
+
+    function copiarTreino() {
+        const texto = JSON.stringify(window.treinoAtual, null, 2);
+        navigator.clipboard.writeText(texto).then(() => {
+            alert('✅ Treino copiado para a área de transferência!');
+        });
+    }
+
+    function novoTreino() {
+        document.getElementById('formCard').style.display = 'block';
+        document.getElementById('result').classList.remove('active');
+        document.getElementById('treinoForm').reset();
+        restricoes.length = 0;
+        document.querySelectorAll('.chip').forEach(chip => chip.remove());
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
+</body>
+</html>
+</artifact>
