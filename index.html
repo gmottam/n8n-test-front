@@ -3,9 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>💪 Gerador de Treino com IA</title>
+    <title> Gerador de Treino com IA</title>
     <meta name="description" content="Gere seu treino de academia personalizado em segundos usando Inteligência Artificial">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💪</text></svg>">
+    
+    <!-- ⚙️ CLERK: Substitua pela sua Publishable Key -->
+    <script
+      async
+      crossorigin="anonymous"
+      data-clerk-publishable-key="pk_test_XXXXXXXX"
+      src="https://accounts.clerk.com/npm/@clerk/clerk-js@latest/dist/clerk.browser.js"
+      type="text/javascript"
+    ></script>
+    
     <style>
         * {
             margin: 0;
@@ -14,7 +24,7 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
@@ -31,6 +41,7 @@
             color: white;
             margin-bottom: 40px;
             padding: 20px;
+            position: relative;
         }
 
         .header h1 {
@@ -44,12 +55,62 @@
             opacity: 0.95;
         }
 
+        .user-menu {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .user-info {
+            background: rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            border-radius: 25px;
+            color: white;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-user {
+            padding: 10px 20px;
+            background: white;
+            color: #667eea;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-user:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
         .card {
             background: white;
             border-radius: 20px;
             padding: 40px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             margin-bottom: 30px;
+        }
+
+        .auth-required {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .auth-required h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .auth-required p {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
         }
 
         .form-grid {
@@ -75,7 +136,7 @@
             font-size: 0.95rem;
         }
 
-        input, select, textarea {
+        input, select {
             padding: 12px 15px;
             border: 2px solid #e0e0e0;
             border-radius: 10px;
@@ -84,7 +145,7 @@
             font-family: inherit;
         }
 
-        input:focus, select:focus, textarea:focus {
+        input:focus, select:focus {
             outline: none;
             border-color: #667eea;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
@@ -138,9 +199,6 @@
             padding: 0;
             width: 20px;
             height: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
         .chips-input input {
@@ -280,7 +338,6 @@
 
         .treino-dia .foco {
             color: #666;
-            font-size: 1rem;
             margin-bottom: 20px;
         }
 
@@ -290,13 +347,6 @@
             border-radius: 8px;
             margin-bottom: 12px;
             border-left: 3px solid #764ba2;
-        }
-
-        .exercicio-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: start;
-            margin-bottom: 10px;
         }
 
         .exercicio-nome {
@@ -309,8 +359,7 @@
             display: flex;
             gap: 15px;
             flex-wrap: wrap;
-            margin-bottom: 10px;
-            font-size: 0.9rem;
+            margin: 10px 0;
         }
 
         .detalhe {
@@ -319,6 +368,7 @@
             border-radius: 6px;
             color: #5e35b1;
             font-weight: 500;
+            font-size: 0.9rem;
         }
 
         .exercicio-dica {
@@ -387,6 +437,74 @@
             display: block;
         }
 
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            color: #666;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .treino-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+        }
+
+        .treino-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 10px;
+        }
+
+        .treino-card-title {
+            color: #667eea;
+            margin-bottom: 5px;
+            font-size: 1.2rem;
+        }
+
+        .treino-card-info {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .treino-card-date {
+            color: #999;
+            font-size: 0.85rem;
+        }
+
+        .treino-card-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
         @media (max-width: 768px) {
             .header h1 {
                 font-size: 2rem;
@@ -400,11 +518,31 @@
                 grid-template-columns: 1fr;
             }
 
+            .user-menu {
+                position: static;
+                justify-content: center;
+                margin-top: 20px;
+                flex-direction: column;
+            }
+
             .actions {
                 flex-direction: column;
             }
 
             .btn-secondary {
+                width: 100%;
+            }
+
+            .treino-card-header {
+                flex-direction: column;
+            }
+
+            .treino-card-actions {
+                flex-direction: column;
+            }
+
+            .treino-card-actions a,
+            .treino-card-actions button {
                 width: 100%;
             }
         }
@@ -415,120 +553,226 @@
         <div class="header">
             <h1>💪 Gerador de Treino com IA</h1>
             <p>Treino personalizado em segundos usando Inteligência Artificial</p>
+            
+            <div class="user-menu" id="userMenu"></div>
         </div>
 
-        <div class="card" id="formCard">
-            <form id="treinoForm">
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="nome">Nome Completo *</label>
-                        <input type="text" id="nome" required placeholder="Ex: João Silva">
-                    </div>
+        <!-- Área que requer autenticação -->
+        <div id="authRequired" class="card auth-required">
+            <h2>🔐 Faça login para continuar</h2>
+            <p>Entre para gerar seus treinos personalizados e acessar seu histórico</p>
+            <button class="btn" id="signInBtn">Entrar / Criar Conta</button>
+        </div>
 
-                    <div class="form-group">
-                        <label for="idade">Idade *</label>
-                        <input type="number" id="idade" min="16" max="100" required placeholder="Ex: 27">
-                    </div>
+        <!-- Conteúdo autenticado -->
+        <div id="authenticatedContent" style="display: none;">
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('gerar')">🏋️ Gerar Treino</button>
+                <button class="tab" onclick="switchTab('historico')">📚 Meus Treinos</button>
+            </div>
 
-                    <div class="form-group">
-                        <label for="peso">Peso (kg) *</label>
-                        <input type="number" id="peso" min="30" max="300" step="0.1" required placeholder="Ex: 75">
-                    </div>
+            <!-- Tab: Gerar Treino -->
+            <div id="tab-gerar" class="tab-content active">
+                <div class="card" id="formCard">
+                    <form id="treinoForm">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="nome">Nome Completo *</label>
+                                <input type="text" id="nome" required placeholder="Ex: João Silva">
+                            </div>
 
-                    <div class="form-group">
-                        <label for="altura">Altura (cm) *</label>
-                        <input type="number" id="altura" min="100" max="250" required placeholder="Ex: 175">
-                    </div>
+                            <div class="form-group">
+                                <label for="idade">Idade *</label>
+                                <input type="number" id="idade" min="16" max="100" required placeholder="Ex: 27">
+                            </div>
 
-                    <div class="form-group">
-                        <label>Sexo *</label>
-                        <div class="radio-group">
-                            <label class="radio-option">
-                                <input type="radio" name="sexo" value="masculino" required>
-                                <span>Masculino</span>
-                            </label>
-                            <label class="radio-option">
-                                <input type="radio" name="sexo" value="feminino" required>
-                                <span>Feminino</span>
-                            </label>
+                            <div class="form-group">
+                                <label for="peso">Peso (kg) *</label>
+                                <input type="number" id="peso" min="30" max="300" step="0.1" required placeholder="Ex: 75">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="altura">Altura (cm) *</label>
+                                <input type="number" id="altura" min="100" max="250" required placeholder="Ex: 175">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Sexo *</label>
+                                <div class="radio-group">
+                                    <label class="radio-option">
+                                        <input type="radio" name="sexo" value="masculino" required>
+                                        <span>Masculino</span>
+                                    </label>
+                                    <label class="radio-option">
+                                        <input type="radio" name="sexo" value="feminino" required>
+                                        <span>Feminino</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="objetivo">Objetivo *</label>
+                                <select id="objetivo" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="ganho de massa">Ganho de Massa</option>
+                                    <option value="perda de peso">Perda de Peso</option>
+                                    <option value="definição">Definição Muscular</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="nivel">Nível de Experiência *</label>
+                                <select id="nivel" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="iniciante">Iniciante</option>
+                                    <option value="intermediário">Intermediário</option>
+                                    <option value="avançado">Avançado</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="frequencia">Frequência Semanal *</label>
+                                <select id="frequencia" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="3">3x por semana</option>
+                                    <option value="4">4x por semana</option>
+                                    <option value="5">5x por semana</option>
+                                    <option value="6">6x por semana</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label>Restrições/Lesões (pressione Enter para adicionar)</label>
+                                <div class="chips-input" id="restricoesContainer">
+                                    <input type="text" id="restricoesInput" placeholder="Ex: dor no joelho esquerdo">
+                                </div>
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label for="equipamentos">Equipamentos Disponíveis *</label>
+                                <select id="equipamentos" required>
+                                    <option value="academia completa">Academia Completa</option>
+                                    <option value="home gym">Home Gym</option>
+                                    <option value="peso corporal">Apenas Peso Corporal</option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="form-group">
-                        <label for="objetivo">Objetivo *</label>
-                        <select id="objetivo" required>
-                            <option value="">Selecione...</option>
-                            <option value="ganho de massa">Ganho de Massa</option>
-                            <option value="perda de peso">Perda de Peso</option>
-                            <option value="definição">Definição Muscular</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="nivel">Nível de Experiência *</label>
-                        <select id="nivel" required>
-                            <option value="">Selecione...</option>
-                            <option value="iniciante">Iniciante</option>
-                            <option value="intermediário">Intermediário</option>
-                            <option value="avançado">Avançado</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="frequencia">Frequência Semanal *</label>
-                        <select id="frequencia" required>
-                            <option value="">Selecione...</option>
-                            <option value="3">3x por semana</option>
-                            <option value="4">4x por semana</option>
-                            <option value="5">5x por semana</option>
-                            <option value="6">6x por semana</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group full-width">
-                        <label>Restrições/Lesões (pressione Enter para adicionar)</label>
-                        <div class="chips-input" id="restricoesContainer">
-                            <input type="text" id="restricoesInput" placeholder="Ex: dor no joelho esquerdo">
-                        </div>
-                    </div>
-
-                    <div class="form-group full-width">
-                        <label for="equipamentos">Equipamentos Disponíveis *</label>
-                        <select id="equipamentos" required>
-                            <option value="academia completa">Academia Completa</option>
-                            <option value="home gym">Home Gym</option>
-                            <option value="peso corporal">Apenas Peso Corporal</option>
-                        </select>
-                    </div>
+                        <button type="submit" class="btn">
+                            🚀 Gerar Meu Treino Personalizado
+                        </button>
+                    </form>
                 </div>
 
-                <button type="submit" class="btn">
-                    🚀 Gerar Meu Treino Personalizado
-                </button>
-            </form>
+                <div class="card loading" id="loading">
+                    <div class="spinner"></div>
+                    <h3>🤖 IA está criando seu treino personalizado...</h3>
+                    <p>Isso pode levar alguns segundos</p>
+                </div>
+
+                <div class="error" id="error"></div>
+
+                <div class="card result" id="result"></div>
+            </div>
+
+            <!-- Tab: Histórico -->
+            <div id="tab-historico" class="tab-content">
+                <div class="card">
+                    <h2 style="margin-bottom: 20px;">📚 Meus Treinos</h2>
+                    <div id="historicoList">
+                        <div style="text-align: center; padding: 40px; color: #999;">
+                            Carregando seus treinos...
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <div class="card loading" id="loading">
-            <div class="spinner"></div>
-            <h3>🤖 IA está criando seu treino personalizado...</h3>
-            <p>Isso pode levar alguns segundos</p>
-        </div>
-
-        <div class="error" id="error"></div>
-
-        <div class="card result" id="result"></div>
     </div>
 
     <script>
-        // ⚙️ CONFIGURE SEU WEBHOOK AQUI
+        // ⚙️ CONFIGURAÇÕES - ATUALIZE ESTAS URLs
         const WEBHOOK_URL = 'https://gmottam.app.n8n.cloud/webhook-test/webhook-test/gerar-treino';
+        const HISTORICO_URL = 'https://gmottam.app.n8n.cloud/webhook-test/meus-treinos';
+        
+        let clerk;
+        let currentUser = null;
+
+        // Inicializar Clerk
+        window.addEventListener('load', async () => {
+            clerk = window.Clerk;
+            
+            if (!clerk) {
+                console.error('Clerk não carregou. Verifique a Publishable Key.');
+                return;
+            }
+            
+            await clerk.load();
+
+            if (clerk.user) {
+                currentUser = clerk.user;
+                mostrarConteudoAutenticado();
+            } else {
+                document.getElementById('authRequired').style.display = 'block';
+            }
+
+            // Botão de login
+            document.getElementById('signInBtn')?.addEventListener('click', () => {
+                clerk.openSignIn();
+            });
+            
+            // Listener para mudanças de autenticação
+            clerk.addListener(({ user }) => {
+                if (user) {
+                    currentUser = user;
+                    mostrarConteudoAutenticado();
+                } else {
+                    window.location.reload();
+                }
+            });
+        });
+
+        function mostrarConteudoAutenticado() {
+            document.getElementById('authRequired').style.display = 'none';
+            document.getElementById('authenticatedContent').style.display = 'block';
+
+            // Preenche nome automaticamente
+            if (currentUser.firstName) {
+                document.getElementById('nome').value = `${currentUser.firstName} ${currentUser.lastName || ''}`.trim();
+            }
+
+            // Menu do usuário
+            const userMenu = document.getElementById('userMenu');
+            userMenu.innerHTML = `
+                <div class="user-info">
+                    👤 ${currentUser.firstName || currentUser.emailAddresses[0].emailAddress.split('@')[0]}
+                </div>
+                <button class="btn-user" onclick="clerk.signOut()">Sair</button>
+            `;
+
+            // Carregar histórico
+            carregarHistorico();
+        }
+
+        // Sistema de tabs
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+
+            if (tabName === 'historico') {
+                carregarHistorico();
+            }
+        }
 
         // Sistema de chips para restrições
         const restricoes = [];
         const restricoesInput = document.getElementById('restricoesInput');
         const restricoesContainer = document.getElementById('restricoesContainer');
 
-        restricoesInput.addEventListener('keydown', (e) => {
+        restricoesInput?.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault();
                 const valor = restricoesInput.value.trim();
@@ -545,7 +789,7 @@
             chip.className = 'chip';
             chip.innerHTML = `
                 ${texto}
-                <button type="button" onclick="removerChip(this, '${texto}')">×</button>
+                <button type="button" onclick="removerChip(this, '${texto.replace(/'/g, "\\'")}')">×</button>
             `;
             restricoesContainer.insertBefore(chip, restricoesInput);
         }
@@ -559,10 +803,17 @@
         }
 
         // Formulário
-        document.getElementById('treinoForm').addEventListener('submit', async (e) => {
+        document.getElementById('treinoForm')?.addEventListener('submit', async (e) => {
             e.preventDefault();
 
+            if (!currentUser) {
+                alert('Você precisa estar logado!');
+                return;
+            }
+
             const formData = {
+                user_id: currentUser.id,
+                user_email: currentUser.emailAddresses[0].emailAddress,
                 nome: document.getElementById('nome').value,
                 idade: parseInt(document.getElementById('idade').value),
                 peso: parseFloat(document.getElementById('peso').value),
@@ -670,9 +921,7 @@
                 dia.exercicios.forEach(ex => {
                     html += `
                         <div class="exercicio">
-                            <div class="exercicio-header">
-                                <div class="exercicio-nome">${ex.ordem}. ${ex.nome}</div>
-                            </div>
+                            <div class="exercicio-nome">${ex.ordem}. ${ex.nome}</div>
                             <div class="exercicio-detalhes">
                                 <span class="detalhe">📊 ${ex.series} séries</span>
                                 <span class="detalhe">🔄 ${ex.repeticoes} reps</span>
@@ -710,19 +959,21 @@
             resultDiv.innerHTML = html;
             resultDiv.classList.add('active');
             
-            // Salvar treino para compartilhar
             window.treinoAtual = data;
+            
+            // Recarrega histórico após gerar
+            setTimeout(() => carregarHistorico(), 1000);
         }
 
         function copiarTreino() {
             const texto = JSON.stringify(window.treinoAtual, null, 2);
             navigator.clipboard.writeText(texto).then(() => {
-                alert('✅ Treino completo (JSON) copiado para a área de transferência!');
+                alert('✅ Treino completo (JSON) copiado!');
             });
         }
 
         function compartilharTreino() {
-            if (!window.treinoAtual || !window.treinoAtual.id_treino) {
+            if (!window.treinoAtual?.id_treino) {
                 alert('❌ Gere um treino primeiro!');
                 return;
             }
@@ -731,7 +982,6 @@
             const linkTreino = `${window.location.origin}/treino.html?id=${idTreino}`;
             const texto = `Confira meu treino personalizado gerado por IA! 💪`;
             
-            // Tenta usar Web Share API (mobile)
             if (navigator.share) {
                 navigator.share({
                     title: 'Treino Personalizado com IA',
@@ -762,6 +1012,89 @@
             restricoes.length = 0;
             document.querySelectorAll('.chip').forEach(chip => chip.remove());
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Carregar histórico de treinos do usuário
+        async function carregarHistorico() {
+            if (!currentUser) return;
+
+            const historicoDiv = document.getElementById('historicoList');
+            historicoDiv.innerHTML = '<div style="text-align: center; padding: 40px;"><div class="spinner"></div><p style="margin-top: 15px; color: #666;">Carregando seus treinos...</p></div>';
+
+            try {
+                const response = await fetch(`${HISTORICO_URL}?user_id=${currentUser.id}`);
+                
+                if (!response.ok) throw new Error('Erro ao carregar');
+                
+                const data = await response.json();
+                
+                if (data.treinos && data.treinos.length === 0) {
+                    historicoDiv.innerHTML = `
+                        <div style="text-align: center; padding: 60px;">
+                            <h3 style="color: #999;">📝 Nenhum treino ainda</h3>
+                            <p style="color: #666; margin-top: 15px;">
+                                Gere seu primeiro treino na aba "Gerar Treino"
+                            </p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                let html = '';
+                data.treinos.forEach(treino => {
+                    html += `
+                        <div class="treino-card">
+                            <div class="treino-card-header">
+                                <div>
+                                    <h3 class="treino-card-title">${treino.nome}</h3>
+                                    <p class="treino-card-info">
+                                        ${treino.objetivo} • ${treino.nivel}
+                                    </p>
+                                </div>
+                                <span class="treino-card-date">
+                                    ${new Date(treino.data_criacao).toLocaleDateString('pt-BR')}
+                                </span>
+                            </div>
+                            <div class="treino-card-actions">
+                                <a href="/treino.html?id=${treino.id_treino}" target="_blank" class="btn-secondary" style="text-decoration: none; display: inline-block; text-align: center;">
+                                    👁️ Ver Treino
+                                </a>
+                                <button onclick="compartilharTreinoHistorico('${treino.id_treino}')" class="btn-secondary">
+                                    🔗 Compartilhar
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                historicoDiv.innerHTML = html;
+                
+            } catch (error) {
+                console.error('Erro ao carregar histórico:', error);
+                historicoDiv.innerHTML = `
+                    <div style="text-align: center; padding: 60px;">
+                        <h3 style="color: #999; margin-bottom: 15px;">🚧 Histórico em Desenvolvimento</h3>
+                        <p style="color: #666; margin-bottom: 20px;">
+                            A funcionalidade de histórico será implementada em breve!
+                        </p>
+                        <p style="color: #999; font-size: 0.9rem;">
+                            Por enquanto, seus treinos estão sendo salvos no banco de dados.<br>
+                            Você pode compartilhar o link de cada treino gerado.
+                        </p>
+                    </div>
+                `;
+            }
+        }
+
+        function compartilharTreinoHistorico(idTreino) {
+            const link = `${window.location.origin}/treino.html?id=${idTreino}`;
+            const texto = 'Confira meu treino personalizado! 💪';
+            
+            navigator.clipboard.writeText(link).then(() => {
+                if (confirm('✅ Link copiado!\n\nCompartilhar no WhatsApp?')) {
+                    window.open(`https://wa.me/?text=${encodeURIComponent(texto + '\n\n' + link)}`, '_blank');
+                }
+            });
         }
     </script>
 </body>
