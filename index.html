@@ -1041,7 +1041,9 @@
     }
 
     async function carregarHistorico() {
-        if (!currentUser) return;
+        console.log('currentUser: ',currentUser)
+        
+        if (!currentUser && !currentUser.id) return;
 
         const historicoDiv = document.getElementById('historicoList');
         historicoDiv.innerHTML = '<div style="text-align: center; padding: 40px;"><div class="spinner"></div><p style="margin-top: 15px; color: #666;">Carregando seus treinos...</p></div>';
