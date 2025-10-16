@@ -764,6 +764,13 @@
     });
 
     function mostrarConteudoAutenticado() {
+
+        if (!currentUser && clerk.user) {
+            currentUser = clerk.user;
+        }
+    
+        console.log('✅ Usuário autenticado:', currentUser);
+        
         document.getElementById('authRequired').style.display = 'none';
         document.getElementById('authenticatedContent').style.display = 'block';
 
@@ -846,11 +853,16 @@
     document.getElementById('treinoForm')?.addEventListener('submit', async (e) => {
         e.preventDefault();
 
+        console.log('Current User:', currentUser);
+        
         if (!currentUser) {
             alert('Você precisa estar logado!');
             return;
         }
 
+        console.log('User ID:', currentUser.id);
+        console.log('Email:', currentUser.emailAddresses);
+        
         const formData = {
             user_id: currentUser.id,
             user_email: currentUser.emailAddresses[0].emailAddress,
@@ -1133,5 +1145,6 @@
 </script>
 </body>
 </html>
+
 
 
