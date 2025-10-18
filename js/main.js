@@ -429,10 +429,7 @@ async function carregarHistorico() {
         console.error('Erro ao carregar histórico:', error);
         historicoDiv.innerHTML = `
             <div style="text-align: center; padding: 60px;">
-                <h3 style="color: #999; margin-bottom: 15px;">🚧 Histórico em Desenvolvimento</h3>
-                <p style="color: #666;">
-                    A funcionalidade será implementada em breve!
-                </p>
+                <h3 style="color: #999; margin-bottom: 15px;"> Nenhum treino encontrado</h3>
             </div>
         `;
     }
