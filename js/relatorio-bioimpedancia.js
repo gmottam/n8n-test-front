@@ -20,8 +20,8 @@ async function carregarBioimpedancia(idAvaliacao) {
     try {
         console.log('📥 Consultando bioimpedância:', idAvaliacao);
 
-        const response = await fetch(`${CONSULTAR_BIOIMPEDANCIA_URL}?id=${idAvaliacao}`);
-
+        const response = await fetch(`${CONSULTAR_BIOIMPEDANCIA_URL}?id_avaliacao=${idAvaliacao}`);
+        
         if (!response.ok) {
             throw new Error('Erro ao carregar dados');
         }
