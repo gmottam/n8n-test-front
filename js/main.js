@@ -1,5 +1,5 @@
-const WEBHOOK_URL = 'https://gmottam.app.n8n.cloud/webhook-test/webhook-test/gerar-treino';
-const HISTORICO_URL = 'https://gmottam.app.n8n.cloud/webhook-test/meus-treinos';
+const WEBHOOK_URL = 'https://gmottam.app.n8n.cloud/webhook/webhook-test/gerar-treino';
+const HISTORICO_URL = 'https://gmottam.app.n8n.cloud/webhook/meus-treinos';
 
 let clerk;
 let currentUser = null;
