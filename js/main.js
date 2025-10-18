@@ -107,8 +107,6 @@ function switchTab(tabName) {
         carregarHistorico();
     } else if (tabName === 'bioimpedancia') {
         setupBioimpedanciaForm();
-    } else if (tabName === 'bioimpedancia') {
-        setupBioimpedanciaForm();
     }
 }
 
