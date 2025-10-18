@@ -1,5 +1,4 @@
-const API_URL = 'https://gmottam.app.n8n.cloud/webhook/consultar-treino';
-
+const API_URL = `/api/n8n-proxy?url=${encodeURIComponent('https://gmottam.app.n8n.cloud/webhook/consultar-treino')}`;
 
 document.addEventListener('DOMContentLoaded', () => {
     const urlParams = new URLSearchParams(window.location.search);

@@ -1,4 +1,4 @@
-﻿const BUSCAR_BIOIMPEDANCIAS_URL = 'https://gmottam.app.n8n.cloud/webhook/buscar-bioimpedancias';
+﻿const BUSCAR_BIOIMPEDANCIAS_URL = `/api/n8n-proxy?url=${encodeURIComponent('https://gmottam.app.n8n.cloud/webhook/buscar-bioimpedancias')}`;
 
 let clerk;
 let currentUser = null;

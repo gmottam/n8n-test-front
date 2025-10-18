@@ -1,6 +1,6 @@
-const WEBHOOK_URL = 'https://gmottam.app.n8n.cloud/webhook/webhook/gerar-treino';
-const HISTORICO_URL = 'https://gmottam.app.n8n.cloud/webhook/meus-treinos';
-const BIOIMPEDANCIA_URL = 'https://gmottam.app.n8n.cloud/webhook/gerar-bioimpedancia';
+const WEBHOOK_URL = `/api/n8n-proxy?url=${encodeURIComponent('https://gmottam.app.n8n.cloud/webhook/gerar-treino')}`;
+const HISTORICO_URL = `/api/n8n-proxy?url=${encodeURIComponent('https://gmottam.app.n8n.cloud/webhook/meus-treinos')}`;
+const BIOIMPEDANCIA_URL = `/api/n8n-proxy?url=${encodeURIComponent('https://gmottam.app.n8n.cloud/webhook/gerar-bioimpedancia')}`;
 
 let clerk;
 let currentUser = null;

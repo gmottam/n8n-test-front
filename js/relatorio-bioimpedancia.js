@@ -1,4 +1,4 @@
-﻿const CONSULTAR_BIOIMPEDANCIA_URL = 'https://gmottam.app.n8n.cloud/webhook/consultar-bioimpedancia';
+﻿const CONSULTAR_BIOIMPEDANCIA_URL = `/api/n8n-proxy?url=${encodeURIComponent('https://gmottam.app.n8n.cloud/webhook/consultar-bioimpedancia')}`;
 
 let dadosBioimpedancia = null;
 
