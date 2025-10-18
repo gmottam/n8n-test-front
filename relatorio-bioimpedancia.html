@@ -1,0 +1,240 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório de Bioimpedância - MottaFit</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚖️</text></svg>">
+    <link rel="stylesheet" href="css/relatorio-bioimpedancia.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚖️ Relatório de Bioimpedância</h1>
+            <div class="header-info">
+                <span id="pacienteNome"></span>
+                <span id="dataAvaliacao"></span>
+            </div>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <h3>📊 Carregando relatório...</h3>
+        </div>
+
+        <div class="error" id="error">
+            <h3>❌ Erro ao carregar relatório</h3>
+            <p>Verifique o ID da avaliação e tente novamente.</p>
+            <a href="/" class="btn">🏠 Voltar</a>
+        </div>
+
+        <div class="content" id="content">
+            <!-- Resumo Executivo -->
+            <div class="card resumo">
+                <h2>📋 Resumo Executivo</h2>
+                <p id="resumoTexto"></p>
+            </div>
+
+            <!-- Métricas Principais -->
+            <div class="metricas-grid">
+                <div class="metrica-card">
+                    <div class="metrica-label">IMC</div>
+                    <div class="metrica-value" id="imc"></div>
+                    <div class="metrica-status" id="imcStatus"></div>
+                </div>
+                <div class="metrica-card">
+                    <div class="metrica-label">% Gordura</div>
+                    <div class="metrica-value" id="gordura"></div>
+                    <div class="metrica-status" id="gorduraStatus"></div>
+                </div>
+                <div class="metrica-card">
+                    <div class="metrica-label">Massa Muscular</div>
+                    <div class="metrica-value" id="massaMuscular"></div>
+                </div>
+                <div class="metrica-card">
+                    <div class="metrica-label">RCQ</div>
+                    <div class="metrica-value" id="rcq"></div>
+                    <div class="metrica-status" id="rcqStatus"></div>
+                </div>
+                <div class="metrica-card">
+                    <div class="metrica-label">Gordura Visceral</div>
+                    <div class="metrica-value" id="gorduraVisceral"></div>
+                    <div class="metrica-status" id="visceralStatus"></div>
+                </div>
+                <div class="metrica-card">
+                    <div class="metrica-label">Idade Metabólica</div>
+                    <div class="metrica-value" id="idadeMetabolica"></div>
+                </div>
+            </div>
+
+            <!-- Dados Pessoais -->
+            <div class="card">
+                <h2>👤 Dados Pessoais</h2>
+                <div class="grid-2">
+                    <div class="item">
+                        <div class="label">Nome</div>
+                        <div class="value" id="nome"></div>
+                    </div>
+                    <div class="item">
+                        <div class="label">Sexo</div>
+                        <div class="value" id="sexo"></div>
+                    </div>
+                    <div class="item">
+                        <div class="label">Idade</div>
+                        <div class="value" id="idade"></div>
+                    </div>
+                    <div class="item">
+                        <div class="label">Peso</div>
+                        <div class="value" id="peso"></div>
+                    </div>
+                    <div class="item">
+                        <div class="label">Altura</div>
+                        <div class="value" id="altura"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Composição Corporal -->
+            <div class="card">
+                <h2>📈 Composição Corporal</h2>
+                <div class="grid-3">
+                    <div class="item">
+                        <div class="label">% Gordura</div>
+                        <div class="value" id="compGordura"></div>
+                    </div>
+                    <div class="item">
+                        <div class="label">Massa Magra</div>
+                        <div class="value" id="compMassaMagra"></div>
+                    </div>
+                    <div class="item">
+                        <div class="label">Massa Gorda</div>
+                        <div class="value" id="compMassaGorda"></div>
+                    </div>
+                    <div class="item">
+                        <div class="label">Massa Muscular</div>
+                        <div class="value" id="compMassaMuscular"></div>
+                    </div>
+                    <div class="item">
+                        <div class="label">Massa Óssea</div>
+                        <div class="value" id="compMassaOssea"></div>
+                    </div>
+                    <div class="item">
+                        <div class="label">% Água Corporal</div>
+                        <div class="value" id="compAgua"></div>
+                    </div>
+                    <div class="item">
+                        <div class="label">Gordura Visceral</div>
+                        <div class="value" id="compGorduraVisceral"></div>
+                    </div>
+                    <div class="item">
+                        <div class="label">% Proteína</div>
+                        <div class="value" id="compProteina"></div>
+                    </div>
+                    <div class="item">
+                        <div class="label">TMB</div>
+                        <div class="value" id="compTMB"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Circunferências -->
+            <div class="card">
+                <h2>📏 Circunferências (cm)</h2>
+                <div class="grid-3">
+                    <div class="item">
+                        <div class="label">Pescoço</div>
+                        <div class="value" id="circPescoco"></div>
+                    </div>
+                    <div class="item">
+                        <div class="label">Ombros</div>
+                        <div class="value" id="circOmbros"></div>
+                    </div>
+                    <div class="item">
+                        <div class="label">Tórax</div>
+                        <div class="value" id="circTorax"></div>
+                    </div>
+                    <div class="item">
+                        <div class="label">Cintura</div>
+                        <div class="value" id="circCintura"></div>
+                    </div>
+                    <div class="item">
+                        <div class="label">Abdômen</div>
+                        <div class="value" id="circAbdomen"></div>
+                    </div>
+                    <div class="item">
+                        <div class="label">Quadril</div>
+                        <div class="value" id="circQuadril"></div>
+                    </div>
+                    <div class="item">
+                        <div class="label">Bíceps D</div>
+                        <div class="value" id="circBicepsD"></div>
+                    </div>
+                    <div class="item">
+                        <div class="label">Bíceps E</div>
+                        <div class="value" id="circBicepsE"></div>
+                    </div>
+                    <div class="item">
+                        <div class="label">Antebraço D</div>
+                        <div class="value" id="circAntebD"></div>
+                    </div>
+                    <div class="item">
+                        <div class="label">Antebraço E</div>
+                        <div class="value" id="circAntebE"></div>
+                    </div>
+                    <div class="item">
+                        <div class="label">Coxa D</div>
+                        <div class="value" id="circCoxaD"></div>
+                    </div>
+                    <div class="item">
+                        <div class="label">Coxa E</div>
+                        <div class="value" id="circCoxaE"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dobras Cutâneas -->
+            <div class="card">
+                <h2>📐 Dobras Cutâneas (mm)</h2>
+                <div class="grid-3">
+                    <div class="item">
+                        <div class="label">Tríceps</div>
+                        <div class="value" id="dobraTriceps"></div>
+                    </div>
+                    <div class="item">
+                        <div class="label">Subescapular</div>
+                        <div class="value" id="dobraSubescapular"></div>
+                    </div>
+                    <div class="item">
+                        <div class="label">Peitoral</div>
+                        <div class="value" id="dobraPeitoral"></div>
+                    </div>
+                    <div class="item">
+                        <div class="label">Axilar</div>
+                        <div class="value" id="dobraAxilar"></div>
+                    </div>
+                    <div class="item">
+                        <div class="label">Supra-ilíaca</div>
+                        <div class="value" id="dobraSupraIliaca"></div>
+                    </div>
+                    <div class="item">
+                        <div class="label">Abdominal</div>
+                        <div class="value" id="dobraAbdominal"></div>
+                    </div>
+                    <div class="item">
+                        <div class="label">Coxa</div>
+                        <div class="value" id="dobraCoxa"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ações -->
+            <div class="actions">
+                <button class="btn" onclick="compartilhar()">🔗 Compartilhar</button>
+                <a href="/" class="btn btn-secondary">🏠 Voltar</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/relatorio-bioimpedancia.js"></script>
+</body>
+</html>
