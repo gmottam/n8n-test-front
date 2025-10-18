@@ -160,27 +160,25 @@
                     <p style="color: #666; margin-bottom: 30px;">Preencha os dados para gerar seu relatório completo de composição corporal</p>
                     
                     <form id="bioimpedanciaForm">
+                        <!-- Dados Pessoais -->
+                        <h3 style="color: #667eea; margin-bottom: 20px; border-bottom: 2px solid #e0e0e0; padding-bottom: 10px;">👤 Dados Pessoais</h3>
                         <div class="form-grid">
                             <div class="form-group">
                                 <label for="bio-nome">Nome Completo *</label>
-                                <input type="text" id="bio-nome" required placeholder="Ex: João Silva">
+                                <input type="text" id="bio-nome" required placeholder="Ex: Guilherme Motta">
                             </div>
-
                             <div class="form-group">
                                 <label for="bio-idade">Idade *</label>
-                                <input type="number" id="bio-idade" min="16" max="100" required placeholder="Ex: 27">
+                                <input type="number" id="bio-idade" min="16" max="100" required placeholder="Ex: 28">
                             </div>
-
                             <div class="form-group">
                                 <label for="bio-peso">Peso (kg) *</label>
                                 <input type="number" id="bio-peso" min="30" max="300" step="0.1" required placeholder="Ex: 75.5">
                             </div>
-
                             <div class="form-group">
                                 <label for="bio-altura">Altura (cm) *</label>
-                                <input type="number" id="bio-altura" min="100" max="250" required placeholder="Ex: 175">
+                                <input type="number" id="bio-altura" min="100" max="250" required placeholder="Ex: 180">
                             </div>
-
                             <div class="form-group">
                                 <label>Sexo *</label>
                                 <div class="radio-group">
@@ -194,45 +192,144 @@
                                     </label>
                                 </div>
                             </div>
+                        </div>
 
+                        <!-- Bioimpedância -->
+                        <h3 style="color: #667eea; margin: 30px 0 20px 0; border-bottom: 2px solid #e0e0e0; padding-bottom: 10px;">⚖️ Dados de Bioimpedância</h3>
+                        <div class="form-grid">
                             <div class="form-group">
-                                <label for="bio-gordura">% Gordura Corporal *</label>
-                                <input type="number" id="bio-gordura" min="3" max="50" step="0.1" required placeholder="Ex: 15.2">
+                                <label for="bio-percentual-gordura">% Gordura Corporal *</label>
+                                <input type="number" id="bio-percentual-gordura" min="3" max="50" step="0.1" required placeholder="Ex: 18.5">
                             </div>
-
                             <div class="form-group">
-                                <label for="bio-musculo">Massa Muscular (kg) *</label>
-                                <input type="number" id="bio-musculo" min="10" max="100" step="0.1" required placeholder="Ex: 45.8">
+                                <label for="bio-massa-magra">Massa Magra (kg) *</label>
+                                <input type="number" id="bio-massa-magra" min="20" max="100" step="0.1" required placeholder="Ex: 61.5">
                             </div>
-
                             <div class="form-group">
-                                <label for="bio-agua">% Água Corporal *</label>
-                                <input type="number" id="bio-agua" min="30" max="80" step="0.1" required placeholder="Ex: 62.5">
+                                <label for="bio-massa-gorda">Massa Gorda (kg) *</label>
+                                <input type="number" id="bio-massa-gorda" min="5" max="80" step="0.1" required placeholder="Ex: 14.0">
                             </div>
-
                             <div class="form-group">
-                                <label for="bio-metabolismo">Taxa Metabólica Basal *</label>
-                                <input type="number" id="bio-metabolismo" min="800" max="3000" required placeholder="Ex: 1850">
+                                <label for="bio-agua-corporal">% Água Corporal *</label>
+                                <input type="number" id="bio-agua-corporal" min="30" max="80" step="0.1" required placeholder="Ex: 58.3">
                             </div>
-
                             <div class="form-group">
-                                <label for="bio-visceral">Gordura Visceral (nível) *</label>
-                                <input type="number" id="bio-visceral" min="1" max="30" required placeholder="Ex: 8">
+                                <label for="bio-massa-muscular">Massa Muscular (kg) *</label>
+                                <input type="number" id="bio-massa-muscular" min="20" max="100" step="0.1" required placeholder="Ex: 58.2">
                             </div>
-
                             <div class="form-group">
-                                <label for="bio-ossos">Massa Óssea (kg)</label>
-                                <input type="number" id="bio-ossos" min="1" max="10" step="0.1" placeholder="Ex: 3.2">
+                                <label for="bio-massa-ossea">Massa Óssea (kg) *</label>
+                                <input type="number" id="bio-massa-ossea" min="1" max="10" step="0.1" required placeholder="Ex: 3.5">
                             </div>
-
                             <div class="form-group">
-                                <label for="bio-proteina">% Proteína</label>
-                                <input type="number" id="bio-proteina" min="10" max="30" step="0.1" placeholder="Ex: 18.5">
+                                <label for="bio-metabolismo-basal">Metabolismo Basal *</label>
+                                <input type="number" id="bio-metabolismo-basal" min="800" max="3000" required placeholder="Ex: 1850">
                             </div>
+                            <div class="form-group">
+                                <label for="bio-gordura-visceral">Gordura Visceral *</label>
+                                <input type="number" id="bio-gordura-visceral" min="1" max="30" required placeholder="Ex: 7">
+                            </div>
+                            <div class="form-group">
+                                <label for="bio-idade-metabolica">Idade Metabólica *</label>
+                                <input type="number" id="bio-idade-metabolica" min="16" max="100" required placeholder="Ex: 25">
+                            </div>
+                            <div class="form-group">
+                                <label for="bio-proteina">% Proteína *</label>
+                                <input type="number" id="bio-proteina" min="10" max="30" step="0.1" required placeholder="Ex: 18.2">
+                            </div>
+                        </div>
 
-                            <div class="form-group full-width">
-                                <label for="bio-observacoes">Observações Adicionais</label>
-                                <textarea id="bio-observacoes" rows="3" placeholder="Ex: Pratica exercícios 4x por semana, dieta balanceada..."></textarea>
+                        <!-- Circunferências -->
+                        <h3 style="color: #667eea; margin: 30px 0 20px 0; border-bottom: 2px solid #e0e0e0; padding-bottom: 10px;">📏 Circunferências (cm)</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="bio-pescoco">Pescoço *</label>
+                                <input type="number" id="bio-pescoco" min="20" max="60" step="0.1" required placeholder="Ex: 38.5">
+                            </div>
+                            <div class="form-group">
+                                <label for="bio-ombros">Ombros *</label>
+                                <input type="number" id="bio-ombros" min="80" max="150" step="0.1" required placeholder="Ex: 112">
+                            </div>
+                            <div class="form-group">
+                                <label for="bio-torax">Tórax *</label>
+                                <input type="number" id="bio-torax" min="70" max="140" step="0.1" required placeholder="Ex: 98">
+                            </div>
+                            <div class="form-group">
+                                <label for="bio-cintura">Cintura *</label>
+                                <input type="number" id="bio-cintura" min="50" max="150" step="0.1" required placeholder="Ex: 82">
+                            </div>
+                            <div class="form-group">
+                                <label for="bio-abdomen">Abdômen *</label>
+                                <input type="number" id="bio-abdomen" min="50" max="150" step="0.1" required placeholder="Ex: 85">
+                            </div>
+                            <div class="form-group">
+                                <label for="bio-quadril">Quadril *</label>
+                                <input type="number" id="bio-quadril" min="60" max="150" step="0.1" required placeholder="Ex: 96">
+                            </div>
+                            <div class="form-group">
+                                <label for="bio-biceps-direito">Bíceps Direito *</label>
+                                <input type="number" id="bio-biceps-direito" min="20" max="60" step="0.1" required placeholder="Ex: 35">
+                            </div>
+                            <div class="form-group">
+                                <label for="bio-biceps-esquerdo">Bíceps Esquerdo *</label>
+                                <input type="number" id="bio-biceps-esquerdo" min="20" max="60" step="0.1" required placeholder="Ex: 34.5">
+                            </div>
+                            <div class="form-group">
+                                <label for="bio-antebraco-direito">Antebraço Direito *</label>
+                                <input type="number" id="bio-antebraco-direito" min="15" max="40" step="0.1" required placeholder="Ex: 28">
+                            </div>
+                            <div class="form-group">
+                                <label for="bio-antebraco-esquerdo">Antebraço Esquerdo *</label>
+                                <input type="number" id="bio-antebraco-esquerdo" min="15" max="40" step="0.1" required placeholder="Ex: 27.5">
+                            </div>
+                            <div class="form-group">
+                                <label for="bio-coxa-direita">Coxa Direita *</label>
+                                <input type="number" id="bio-coxa-direita" min="30" max="80" step="0.1" required placeholder="Ex: 58">
+                            </div>
+                            <div class="form-group">
+                                <label for="bio-coxa-esquerda">Coxa Esquerda *</label>
+                                <input type="number" id="bio-coxa-esquerda" min="30" max="80" step="0.1" required placeholder="Ex: 57.5">
+                            </div>
+                            <div class="form-group">
+                                <label for="bio-panturrilha-direita">Panturrilha Direita *</label>
+                                <input type="number" id="bio-panturrilha-direita" min="20" max="50" step="0.1" required placeholder="Ex: 38">
+                            </div>
+                            <div class="form-group">
+                                <label for="bio-panturrilha-esquerda">Panturrilha Esquerda *</label>
+                                <input type="number" id="bio-panturrilha-esquerda" min="20" max="50" step="0.1" required placeholder="Ex: 37.5">
+                            </div>
+                        </div>
+
+                        <!-- Dobras Cutâneas -->
+                        <h3 style="color: #667eea; margin: 30px 0 20px 0; border-bottom: 2px solid #e0e0e0; padding-bottom: 10px;">📐 Dobras Cutâneas (mm)</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="bio-triceps">Tríceps *</label>
+                                <input type="number" id="bio-triceps" min="3" max="50" step="0.1" required placeholder="Ex: 12">
+                            </div>
+                            <div class="form-group">
+                                <label for="bio-subescapular">Subescapular *</label>
+                                <input type="number" id="bio-subescapular" min="3" max="50" step="0.1" required placeholder="Ex: 15">
+                            </div>
+                            <div class="form-group">
+                                <label for="bio-peitoral">Peitoral *</label>
+                                <input type="number" id="bio-peitoral" min="3" max="50" step="0.1" required placeholder="Ex: 10">
+                            </div>
+                            <div class="form-group">
+                                <label for="bio-axilar-media">Axilar Média *</label>
+                                <input type="number" id="bio-axilar-media" min="3" max="50" step="0.1" required placeholder="Ex: 13">
+                            </div>
+                            <div class="form-group">
+                                <label for="bio-supra-iliaca">Supra Ilíaca *</label>
+                                <input type="number" id="bio-supra-iliaca" min="3" max="50" step="0.1" required placeholder="Ex: 18">
+                            </div>
+                            <div class="form-group">
+                                <label for="bio-abdominal">Abdominal *</label>
+                                <input type="number" id="bio-abdominal" min="3" max="50" step="0.1" required placeholder="Ex: 22">
+                            </div>
+                            <div class="form-group">
+                                <label for="bio-coxa-dobra">Coxa *</label>
+                                <input type="number" id="bio-coxa-dobra" min="3" max="50" step="0.1" required placeholder="Ex: 16">
                             </div>
                         </div>
 
