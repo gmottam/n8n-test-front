@@ -6,15 +6,19 @@
     <title>MottaFit</title>
     <meta name="description" content="Visualize seu treino personalizado">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💪</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="css/treino.css">
 
 </head>
 <body>
+    <div class="header">
+        <h1>💪 Visualizar Treino</h1>
+    </div>
+
     <div class="container">
-        <div class="header">
-            <h1>💪 Visualizar Treino</h1>
-        </div>
 
         <div class="card loading" id="loading">
             <div class="spinner"></div>
@@ -25,15 +29,13 @@
 
         <div id="result"></div>
 
-        <div class="card" id="actions" style="display: none;">
-            <div class="actions">
-                <a href="/" class="btn">
-                    🏋️ Gerar Meu Próprio Treino
-                </a>
-                <button class="btn btn-secondary" onclick="compartilhar()">
-                    📤 Compartilhar Este Treino
-                </button>
-            </div>
+        <div class="actions" id="actions" style="display: none;">
+            <a href="/" class="btn">
+                🏋️ Gerar Meu Próprio Treino
+            </a>
+            <button class="btn btn-secondary" onclick="compartilhar()">
+                📤 Compartilhar Este Treino
+            </button>
         </div>
     </div>
 
