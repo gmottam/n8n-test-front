@@ -1,4 +1,4 @@
-﻿const CONSULTAR_BIOIMPEDANCIA_URL = 'https://gmottam.app.n8n.cloud/webhook/consultar-bioimpedancia';
+﻿const CONSULTAR_BIOIMPEDANCIA_URL = 'https://gmottam.app.n8n.cloud/webhook-test/consultar-bioimpedancia';
 
 let dadosBioimpedancia = null;
 
@@ -20,8 +20,8 @@ async function carregarBioimpedancia(idAvaliacao) {
     try {
         console.log('📥 Consultando bioimpedância:', idAvaliacao);
 
-        const response = await fetch(`${CONSULTAR_BIOIMPEDANCIA_URL}?id_avaliacao=${idAvaliacao}`);
-        
+        const response = await fetch(`${CONSULTAR_BIOIMPEDANCIA_URL}?id=${idAvaliacao}`);
+
         if (!response.ok) {
             throw new Error('Erro ao carregar dados');
         }
@@ -58,10 +58,16 @@ function showError(message) {
 }
 
 function exibirBioimpedancia(data) {
-    // Parse de strings JSON se necessário
-    let circunferencias = data.circunferencias;
-    let dobrasCutaneas = data.dobras_cutaneas;
+    console.log('📊 Estrutura de dados:', data);
 
+    // Acessar dados de paciente, metricas corretamente
+    const paciente = data.paciente || {};
+    const metricas = data.metricas || {};
+    const bioimpedancia = metricas.bioimpedancia || {};
+    let circunferencias = metricas.circunferencias || {};
+    let dobrasCutaneas = metricas.dobras_cutaneas || {};
+
+    // Parse de strings JSON se necessário
     if (typeof circunferencias === 'string') {
         circunferencias = JSON.parse(circunferencias);
     }
@@ -69,78 +75,78 @@ function exibirBioimpedancia(data) {
         dobrasCutaneas = JSON.parse(dobrasCutaneas);
     }
 
-    // Calcular IMC e RCQ
-    const imc = (data.peso / Math.pow(data.altura / 100, 2)).toFixed(1);
-    const rcq = (circunferencias.cintura / circunferencias.quadril).toFixed(2);
+    // Calcular IMC e RCQ se não virem prontos
+    const imc = paciente.imc || (data.peso / Math.pow(data.altura / 100, 2)).toFixed(1);
+    const rcq = paciente.rcq || (circunferencias.cintura / circunferencias.quadril).toFixed(2);
 
     // Header
-    document.getElementById('pacienteNome').textContent = data.nome;
+    document.getElementById('pacienteNome').textContent = paciente.nome || data.nome || 'N/A';
     document.getElementById('dataAvaliacao').textContent = new Date(data.data_criacao).toLocaleDateString('pt-BR');
 
     // Resumo
     document.getElementById('resumoTexto').textContent =
-        `Análise de bioimpedância realizada para ${data.nome}, ${data.idade} anos, ` +
-        `sexo ${data.sexo}. IMC: ${imc} (${getClassificacaoIMC(imc)}). ` +
-        `Percentual de gordura: ${data.percentual_gordura}%. ` +
-        `Massa muscular: ${data.massa_muscular}kg.`;
+        `Análise de bioimpedância realizada para ${paciente.nome || data.nome}, ${paciente.idade} anos, ` +
+        `sexo ${paciente.sexo}. IMC: ${imc} (${getClassificacaoIMC(imc)}). ` +
+        `Percentual de gordura: ${bioimpedancia.percentual_gordura}%. ` +
+        `Massa muscular: ${bioimpedancia.massa_muscular}kg.`;
 
     // Métricas principais
     document.getElementById('imc').textContent = imc;
     document.getElementById('imcStatus').textContent = getClassificacaoIMC(imc);
 
-    document.getElementById('gordura').textContent = `${data.percentual_gordura}%`;
-    document.getElementById('gorduraStatus').textContent = getStatusGordura(data.percentual_gordura, data.sexo);
+    document.getElementById('gordura').textContent = `${bioimpedancia.percentual_gordura}%`;
+    document.getElementById('gorduraStatus').textContent = getStatusGordura(bioimpedancia.percentual_gordura, paciente.sexo);
 
-    document.getElementById('massaMuscular').textContent = `${data.massa_muscular}kg`;
+    document.getElementById('massaMuscular').textContent = `${bioimpedancia.massa_muscular}kg`;
 
     document.getElementById('rcq').textContent = rcq;
     document.getElementById('rcqStatus').textContent = getRcqStatus(rcq);
 
-    document.getElementById('gorduraVisceral').textContent = data.gordura_visceral;
-    document.getElementById('visceralStatus').textContent = getStatusVisceral(data.gordura_visceral);
+    document.getElementById('gorduraVisceral').textContent = bioimpedancia.gordura_visceral;
+    document.getElementById('visceralStatus').textContent = getStatusVisceral(bioimpedancia.gordura_visceral);
 
-    document.getElementById('idadeMetabolica').textContent = `${data.idade_metabolica}a`;
+    document.getElementById('idadeMetabolica').textContent = `${bioimpedancia.idade_metabolica}a`;
 
     // Dados Pessoais
-    document.getElementById('nome').textContent = data.nome;
-    document.getElementById('sexo').textContent = data.sexo.charAt(0).toUpperCase() + data.sexo.slice(1);
-    document.getElementById('idade').textContent = `${data.idade} anos`;
-    document.getElementById('peso').textContent = `${data.peso} kg`;
-    document.getElementById('altura').textContent = `${data.altura} cm`;
+    document.getElementById('nome').textContent = paciente.nome || data.nome || 'N/A';
+    document.getElementById('sexo').textContent = (paciente.sexo || '').charAt(0).toUpperCase() + (paciente.sexo || '').slice(1);
+    document.getElementById('idade').textContent = `${paciente.idade} anos`;
+    document.getElementById('peso').textContent = `${paciente.peso} kg`;
+    document.getElementById('altura').textContent = `${paciente.altura} cm`;
 
     // Composição Corporal
-    document.getElementById('compGordura').textContent = `${data.percentual_gordura}%`;
-    document.getElementById('compMassaMagra').textContent = `${data.massa_magra} kg`;
-    document.getElementById('compMassaGorda').textContent = `${data.massa_gorda} kg`;
-    document.getElementById('compMassaMuscular').textContent = `${data.massa_muscular} kg`;
-    document.getElementById('compMassaOssea').textContent = `${data.massa_ossea} kg`;
-    document.getElementById('compAgua').textContent = `${data.agua_corporal}%`;
-    document.getElementById('compGorduraVisceral').textContent = data.gordura_visceral;
-    document.getElementById('compProteina').textContent = `${data.proteina}%`;
-    document.getElementById('compTMB').textContent = `${data.metabolismo_basal} kcal`;
+    document.getElementById('compGordura').textContent = `${bioimpedancia.percentual_gordura}%`;
+    document.getElementById('compMassaMagra').textContent = `${bioimpedancia.massa_magra} kg`;
+    document.getElementById('compMassaGorda').textContent = `${bioimpedancia.massa_gorda} kg`;
+    document.getElementById('compMassaMuscular').textContent = `${bioimpedancia.massa_muscular} kg`;
+    document.getElementById('compMassaOssea').textContent = `${bioimpedancia.massa_ossea} kg`;
+    document.getElementById('compAgua').textContent = `${bioimpedancia.agua_corporal}%`;
+    document.getElementById('compGorduraVisceral').textContent = bioimpedancia.gordura_visceral;
+    document.getElementById('compProteina').textContent = `${bioimpedancia.proteina}%`;
+    document.getElementById('compTMB').textContent = `${bioimpedancia.metabolismo_basal} kcal`;
 
     // Circunferências
-    document.getElementById('circPescoco').textContent = circunferencias.pescoco;
-    document.getElementById('circOmbros').textContent = circunferencias.ombros;
-    document.getElementById('circTorax').textContent = circunferencias.torax;
-    document.getElementById('circCintura').textContent = circunferencias.cintura;
-    document.getElementById('circAbdomen').textContent = circunferencias.abdomen;
-    document.getElementById('circQuadril').textContent = circunferencias.quadril;
-    document.getElementById('circBicepsD').textContent = circunferencias.biceps_direito;
-    document.getElementById('circBicepsE').textContent = circunferencias.biceps_esquerdo;
-    document.getElementById('circAntebD').textContent = circunferencias.antebraco_direito;
-    document.getElementById('circAntebE').textContent = circunferencias.antebraco_esquerdo;
-    document.getElementById('circCoxaD').textContent = circunferencias.coxa_direita;
-    document.getElementById('circCoxaE').textContent = circunferencias.coxa_esquerda;
+    document.getElementById('circPescoco').textContent = circunferencias.pescoco || 'N/A';
+    document.getElementById('circOmbros').textContent = circunferencias.ombros || 'N/A';
+    document.getElementById('circTorax').textContent = circunferencias.torax || 'N/A';
+    document.getElementById('circCintura').textContent = circunferencias.cintura || 'N/A';
+    document.getElementById('circAbdomen').textContent = circunferencias.abdomen || 'N/A';
+    document.getElementById('circQuadril').textContent = circunferencias.quadril || 'N/A';
+    document.getElementById('circBicepsD').textContent = circunferencias.biceps_direito || 'N/A';
+    document.getElementById('circBicepsE').textContent = circunferencias.biceps_esquerdo || 'N/A';
+    document.getElementById('circAntebD').textContent = circunferencias.antebraco_direito || 'N/A';
+    document.getElementById('circAntebE').textContent = circunferencias.antebraco_esquerdo || 'N/A';
+    document.getElementById('circCoxaD').textContent = circunferencias.coxa_direita || 'N/A';
+    document.getElementById('circCoxaE').textContent = circunferencias.coxa_esquerda || 'N/A';
 
     // Dobras Cutâneas
-    document.getElementById('dobraTriceps').textContent = dobrasCutaneas.triceps;
-    document.getElementById('dobraSubescapular').textContent = dobrasCutaneas.subescapular;
-    document.getElementById('dobraPeitoral').textContent = dobrasCutaneas.peitoral;
-    document.getElementById('dobraAxilar').textContent = dobrasCutaneas.axilar_media;
-    document.getElementById('dobraSupraIliaca').textContent = dobrasCutaneas.supra_iliaca;
-    document.getElementById('dobraAbdominal').textContent = dobrasCutaneas.abdominal;
-    document.getElementById('dobraCoxa').textContent = dobrasCutaneas.coxa;
+    document.getElementById('dobraTriceps').textContent = dobrasCutaneas.triceps || 'N/A';
+    document.getElementById('dobraSubescapular').textContent = dobrasCutaneas.subescapular || 'N/A';
+    document.getElementById('dobraPeitoral').textContent = dobrasCutaneas.peitoral || 'N/A';
+    document.getElementById('dobraAxilar').textContent = dobrasCutaneas.axilar_media || 'N/A';
+    document.getElementById('dobraSupraIliaca').textContent = dobrasCutaneas.supra_iliaca || 'N/A';
+    document.getElementById('dobraAbdominal').textContent = dobrasCutaneas.abdominal || 'N/A';
+    document.getElementById('dobraCoxa').textContent = dobrasCutaneas.coxa || 'N/A';
 
     // Mostrar conteúdo
     document.getElementById('content').classList.add('active');
