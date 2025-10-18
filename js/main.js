@@ -77,8 +77,6 @@ function mostrarConteudoAutenticado() {
         </div>
         <button class="btn-user" onclick="fazerLogout()">Sair</button>
     `;
-
-    carregarHistorico();
 }
 
 function fazerLogout() {
