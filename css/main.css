@@ -510,117 +510,7 @@ input, select {
     margin-top: 15px;
 }
 
-/* Bioimpedância */
-textarea {
-    padding: 12px 15px;
-    border: 2px solid #e0e0e0;
-    border-radius: 10px;
-    font-size: 1rem;
-    transition: all 0.3s;
-    font-family: inherit;
-    resize: vertical;
-    min-height: 80px;
-}
 
-    textarea:focus {
-        outline: none;
-        border-color: #667eea;
-        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-    }
-
-.bio-overview {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 15px;
-    margin-bottom: 25px;
-}
-
-.bio-card {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 15px;
-    border-radius: 12px;
-    text-align: center;
-}
-
-    .bio-card .bio-label {
-        font-size: 0.85rem;
-        opacity: 0.9;
-        margin-bottom: 5px;
-    }
-
-    .bio-card .bio-value {
-        font-size: 1.4rem;
-        font-weight: bold;
-    }
-
-.bio-section {
-    background: #f8f9fa;
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 20px;
-    border-left: 4px solid #667eea;
-}
-
-    .bio-section h3 {
-        color: #667eea;
-        margin-bottom: 15px;
-        font-size: 1.3rem;
-    }
-
-.bio-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px solid #e0e0e0;
-}
-
-    .bio-item:last-child {
-        border-bottom: none;
-    }
-
-.bio-item-label {
-    font-weight: 500;
-    color: #555;
-}
-
-.bio-item-value {
-    font-weight: 600;
-    color: #333;
-}
-
-.bio-status {
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 600;
-}
-
-.bio-status.excelente {
-    background: #4caf50;
-    color: white;
-}
-
-.bio-status.bom {
-    background: #8bc34a;
-    color: white;
-}
-
-.bio-status.normal {
-    background: #ffc107;
-    color: #333;
-}
-
-.bio-status.atencao {
-    background: #ff9800;
-    color: white;
-}
-
-.bio-status.critico {
-    background: #f44336;
-    color: white;
-}
 
 /* Responsive */
 @media (max-width: 768px) {
@@ -664,13 +554,5 @@ textarea {
             width: 100%;
         }
 
-    .bio-overview {
-        grid-template-columns: repeat(2, 1fr);
-    }
 
-    .bio-item {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 5px;
-    }
 }

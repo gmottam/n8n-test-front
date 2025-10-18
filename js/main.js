@@ -117,7 +117,6 @@ window.novoTreino = novoTreino;
 window.compartilharTreinoHistorico = compartilharTreinoHistorico;
 window.adicionarChip = adicionarChip;
 window.removerChip = removerChip;
-window.gerarPDFBioimpedancia = gerarPDFBioimpedancia;
 
 function setupChipsInput() {
     const restricoesInput = document.getElementById('restricoesInput');
@@ -557,82 +556,4 @@ function showBioError(message) {
     document.getElementById('bioError').classList.add('active');
 }
 
-function getClassificacaoIMC(imc) {
-    if (imc < 18.5) return 'Abaixo do peso';
-    if (imc < 25) return 'Peso normal';
-    if (imc < 30) return 'Sobrepeso';
-    return 'Obesidade';
-}
 
-function getStatusGordura(gordura, sexo) {
-    const limites = sexo === 'masculino' ? [6, 13, 17, 25] : [14, 20, 25, 32];
-    if (gordura < limites[0]) return 'Muito baixo';
-    if (gordura <= limites[1]) return 'Excelente';
-    if (gordura <= limites[2]) return 'Bom';
-    if (gordura <= limites[3]) return 'Normal';
-    return 'Alto';
-}
-
-function getStatusAgua(agua, sexo) {
-    const ideal = sexo === 'masculino' ? [55, 65] : [45, 60];
-    if (agua < ideal[0]) return 'Baixo';
-    if (agua <= ideal[1]) return 'Normal';
-    return 'Alto';
-}
-
-function getStatusVisceral(visceral) {
-    if (visceral <= 9) return 'Normal';
-    if (visceral <= 14) return 'Atenção';
-    return 'Alto';
-}
-
-function gerarRecomendacoes(dados) {
-    const recomendacoes = [];
-
-    if (dados.gordura_corporal > (dados.sexo === 'masculino' ? 20 : 28)) {
-        recomendacoes.push('Considere aumentar atividades cardiovasculares para redução de gordura corporal');
-    }
-
-    if (dados.agua_corporal < (dados.sexo === 'masculino' ? 55 : 45)) {
-        recomendacoes.push('Aumente a ingestão de água para melhorar a hidratação corporal');
-    }
-
-    if (dados.gordura_visceral > 10) {
-        recomendacoes.push('Foque em exercícios aeróbicos e dieta balanceada para reduzir gordura visceral');
-    }
-
-    return recomendacoes;
-}
-
-
-
-function getStatusClass(status) {
-    const statusMap = {
-        'Excelente': 'excelente',
-        'Bom': 'bom',
-        'Normal': 'normal',
-        'Atenção': 'atencao',
-        'Alto': 'critico',
-        'Muito baixo': 'atencao',
-        'Baixo': 'atencao'
-    };
-    return statusMap[status] || 'normal';
-}
-
-function gerarPDFBioimpedancia() {
-    if (!window.bioimpedanciaAtual) {
-        alert('❌ Faça uma análise primeiro!');
-        return;
-    }
-
-    // Aqui você implementaria a geração do PDF
-    // Por enquanto, vamos simular
-    alert('🚧 Funcionalidade em desenvolvimento!\n\nEm breve você poderá gerar e baixar o PDF do seu relatório de bioimpedância.');
-}
-
-function novaBioimpedancia() {
-    document.getElementById('bioimpedanciaCard').style.display = 'block';
-    document.getElementById('bioResult').classList.remove('active');
-    document.getElementById('bioimpedanciaForm').reset();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}

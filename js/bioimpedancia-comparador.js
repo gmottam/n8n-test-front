@@ -200,4 +200,123 @@ function formatarBioimpedancia(registro) {
                 idade_metabolica: registro.idade_metabolica,
                 proteina: registro.proteina
             },
-            circunferencias: circunfer
+            circunferencias: circunferencias,
+            dobras_cutaneas: dobrasCutaneas
+        },
+        data_criacao: registro.data_criacao
+    };
+}
+
+function compararBioimpedancias(anterior, atual) {
+    const comparacao = {
+        anterior: anterior,
+        atual: atual,
+        diferencas: {}
+    };
+
+    // Comparar bioimpedância
+    const bioAnt = anterior.metricas.bioimpedancia;
+    const bioAtu = atual.metricas.bioimpedancia;
+
+    Object.keys(bioAnt).forEach(key => {
+        const valorAnt = parseFloat(bioAnt[key]);
+        const valorAtu = parseFloat(bioAtu[key]);
+        const diferenca = valorAtu - valorAnt;
+        
+        comparacao.diferencas[key] = {
+            anterior: valorAnt,
+            atual: valorAtu,
+            diferenca: diferenca,
+            percentual: valorAnt !== 0 ? ((diferenca / valorAnt) * 100) : 0
+        };
+    });
+
+    return comparacao;
+}
+
+function gerarResumoProgresso(comparacao) {
+    const melhorias = [];
+    const pioras = [];
+    
+    // Analisar principais métricas
+    const gordura = comparacao.diferencas.percentual_gordura;
+    const musculo = comparacao.diferencas.massa_muscular;
+    const visceral = comparacao.diferencas.gordura_visceral;
+    
+    if (gordura.diferenca < 0) melhorias.push('Redução de gordura');
+    else if (gordura.diferenca > 0) pioras.push('Aumento de gordura');
+    
+    if (musculo.diferenca > 0) melhorias.push('Ganho muscular');
+    else if (musculo.diferenca < 0) pioras.push('Perda muscular');
+    
+    if (visceral.diferenca < 0) melhorias.push('Redução visceral');
+    else if (visceral.diferenca > 0) pioras.push('Aumento visceral');
+
+    return `
+        <div class="comparacao-header">
+            <h2>📊 Comparação de Bioimpedância</h2>
+            <p>Evolução entre ${new Date(comparacao.anterior.data_criacao).toLocaleDateString('pt-BR')} e ${new Date(comparacao.atual.data_criacao).toLocaleDateString('pt-BR')}</p>
+        </div>
+        
+        <div class="progresso-resumo">
+            <div class="resumo-item ${melhorias.length > pioras.length ? 'bom' : 'neutro'}">
+                <div class="resumo-numero">${melhorias.length}</div>
+                <div class="resumo-label">Melhorias</div>
+            </div>
+            <div class="resumo-item info">
+                <div class="resumo-numero">${Math.abs(gordura.diferenca).toFixed(1)}%</div>
+                <div class="resumo-label">Δ Gordura</div>
+            </div>
+            <div class="resumo-item ${musculo.diferenca > 0 ? 'bom' : 'neutro'}">
+                <div class="resumo-numero">${musculo.diferenca > 0 ? '+' : ''}${musculo.diferenca.toFixed(1)}kg</div>
+                <div class="resumo-label">Δ Músculo</div>
+            </div>
+        </div>
+    `;
+}
+
+function gerarHTMLComparacao(comparacao) {
+    const metricas = [
+        { key: 'percentual_gordura', label: '% Gordura', unidade: '%' },
+        { key: 'massa_muscular', label: 'Massa Muscular', unidade: 'kg' },
+        { key: 'massa_magra', label: 'Massa Magra', unidade: 'kg' },
+        { key: 'agua_corporal', label: '% Água', unidade: '%' },
+        { key: 'gordura_visceral', label: 'Gordura Visceral', unidade: '' },
+        { key: 'metabolismo_basal', label: 'TMB', unidade: 'kcal' }
+    ];
+
+    let html = '<div class="comparacao-grid">';
+
+    metricas.forEach(metrica => {
+        const dados = comparacao.diferencas[metrica.key];
+        const sinal = dados.diferenca > 0 ? '+' : '';
+        const cor = dados.diferenca > 0 ? (metrica.key === 'percentual_gordura' || metrica.key === 'gordura_visceral' ? 'red' : 'green') : 
+                   (metrica.key === 'percentual_gordura' || metrica.key === 'gordura_visceral' ? 'green' : 'red');
+
+        html += `
+            <div class="comparacao-card">
+                <div class="card-label">${metrica.label}</div>
+                <div class="card-valores">
+                    <div class="valor">
+                        <span class="label-pequeno">Anterior</span>
+                        <span class="numero">${dados.anterior}${metrica.unidade}</span>
+                    </div>
+                    <div class="arrow">→</div>
+                    <div class="valor">
+                        <span class="label-pequeno">Atual</span>
+                        <span class="numero">${dados.atual}${metrica.unidade}</span>
+                    </div>
+                </div>
+                <div class="card-resultado" style="color: ${cor}">
+                    ${sinal}${dados.diferenca.toFixed(1)}${metrica.unidade} (${sinal}${dados.percentual.toFixed(1)}%)
+                </div>
+            </div>
+        `;
+    });
+
+    html += '</div>';
+    return html;
+}
+
+window.compararAvaliacoes = compararAvaliacoes;
+window.novaComparacao = novaComparacao;

@@ -155,12 +155,4 @@ function compartilhar() {
     }
 }
 
-function copiarLink() {
-    const url = window.location.href;
-    navigator.clipboard.writeText(url).then(() => {
-        alert('✅ Link copiado! Cole onde quiser compartilhar.');
-    });
-}
-
 window.compartilhar = compartilhar;
-window.copiarLink = copiarLink;
