@@ -1,7 +1,33 @@
 const BIOIMPEDANCIA_URL = 'https://gmottam.app.n8n.cloud/webhook-test/gerar-bioimpedancia';
 
-document.addEventListener('DOMContentLoaded', () => {
-    setupEventListeners();
+let clerk;
+let currentUser = null;
+
+window.addEventListener('load', async () => {
+    clerk = window.Clerk;
+
+    if (!clerk) {
+        console.error('❌ Clerk não carregou');
+        return;
+    }
+
+    try {
+        await clerk.load();
+
+        if (clerk.user) {
+            console.log('✅ Usuário logado:', clerk.user.id);
+            currentUser = clerk.user;
+        } else {
+            console.log('ℹ️ Nenhum usuário logado');
+            alert('Faça login primeiro!');
+            window.location.href = '/';
+        }
+
+        setupEventListeners();
+
+    } catch (error) {
+        console.error('❌ Erro:', error);
+    }
 });
 
 function setupEventListeners() {
@@ -11,72 +37,77 @@ function setupEventListeners() {
 async function handleBioimpedanciaSubmit(e) {
     e.preventDefault();
 
-    const formData = {
-        paciente: {
-            nome: document.getElementById('bio-nome').value,
-            sexo: document.querySelector('input[name="bio-sexo"]:checked').value,
-            idade: parseInt(document.getElementById('bio-idade').value),
-            peso: parseFloat(document.getElementById('bio-peso').value),
-            altura: parseInt(document.getElementById('bio-altura').value),
-            data_avaliacao: new Date().toISOString().split('T')[0]
-        },
+    if (!currentUser) {
+        alert('Você precisa estar logado!');
+        return;
+    }
 
-        metricas: {
-            bioimpedancia: {
-                percentual_gordura: parseFloat(document.getElementById('bio-gordura').value),
-                massa_magra: parseFloat(document.getElementById('bio-massa-magra').value),
-                massa_gorda: parseFloat(document.getElementById('bio-massa-gorda').value),
-                agua_corporal: parseFloat(document.getElementById('bio-agua-corporal').value),
-                massa_muscular: parseFloat(document.getElementById('bio-massa-muscular').value),
-                massa_ossea: parseFloat(document.getElementById('bio-massa-ossea').value),
-                metabolismo_basal: parseInt(document.getElementById('bio-metabolismo-basal').value),
-                gordura_visceral: parseInt(document.getElementById('bio-gordura-visceral').value),
-                idade_metabolica: parseInt(document.getElementById('bio-idade-metabolica').value),
-                proteina: parseFloat(document.getElementById('bio-proteina').value)
-            },
-
-            circunferencias: {
-                pescoco: parseFloat(document.getElementById('bio-pescoco').value),
-                ombros: parseFloat(document.getElementById('bio-ombros').value),
-                torax: parseFloat(document.getElementById('bio-torax').value),
-                cintura: parseFloat(document.getElementById('bio-cintura').value),
-                abdomen: parseFloat(document.getElementById('bio-abdomen').value),
-                quadril: parseFloat(document.getElementById('bio-quadril').value),
-                biceps_direito: parseFloat(document.getElementById('bio-biceps-direito').value),
-                biceps_esquerdo: parseFloat(document.getElementById('bio-biceps-esquerdo').value),
-                antebraco_direito: parseFloat(document.getElementById('bio-antebraco-direito').value),
-                antebraco_esquerdo: parseFloat(document.getElementById('bio-antebraco-esquerdo').value),
-                coxa_direita: parseFloat(document.getElementById('bio-coxa-direita').value),
-                coxa_esquerda: parseFloat(document.getElementById('bio-coxa-esquerda').value),
-                panturrilha_direita: parseFloat(document.getElementById('bio-panturrilha-direita').value),
-                panturrilha_esquerda: parseFloat(document.getElementById('bio-panturrilha-esquerda').value)
-            },
-
-            dobras_cutaneas: {
-                triceps: parseFloat(document.getElementById('bio-triceps').value),
-                subescapular: parseFloat(document.getElementById('bio-subescapular').value),
-                peitoral: parseFloat(document.getElementById('bio-peitoral').value),
-                axilar_media: parseFloat(document.getElementById('bio-axilar-media').value),
-                supra_iliaca: parseFloat(document.getElementById('bio-supra-iliaca').value),
-                abdominal: parseFloat(document.getElementById('bio-abdominal').value),
-                coxa: parseFloat(document.getElementById('bio-coxa-dobra').value)
-            }
-        },
-
-        observacoes: document.getElementById('bio-observacoes').value || 'Sem observações adicionais'
+    // Dados Pessoais
+    const dadosPessoais = {
+        nome: document.getElementById('bio-nome').value,
+        idade: parseInt(document.getElementById('bio-idade').value),
+        peso: parseFloat(document.getElementById('bio-peso').value),
+        altura: parseInt(document.getElementById('bio-altura').value),
+        sexo: document.querySelector('input[name="bio-sexo"]:checked').value
     };
 
-    // Calcular RCQ (cintura / quadril)
-    const imc = formData.paciente.peso / Math.pow(formData.paciente.altura / 100, 2);
-    formData.paciente.imc = parseFloat(imc.toFixed(1));
+    // Bioimpedância
+    const bioimpedancia = {
+        percentual_gordura: parseFloat(document.getElementById('bio-gordura').value),
+        massa_magra: parseFloat(document.getElementById('bio-massa-magra').value),
+        massa_gorda: parseFloat(document.getElementById('bio-massa-gorda').value),
+        agua_corporal: parseFloat(document.getElementById('bio-agua-corporal').value),
+        massa_muscular: parseFloat(document.getElementById('bio-massa-muscular').value),
+        massa_ossea: parseFloat(document.getElementById('bio-massa-ossea').value),
+        metabolismo_basal: parseInt(document.getElementById('bio-metabolismo-basal').value),
+        gordura_visceral: parseInt(document.getElementById('bio-gordura-visceral').value),
+        idade_metabolica: parseInt(document.getElementById('bio-idade-metabolica').value),
+        proteina: parseFloat(document.getElementById('bio-proteina').value)
+    };
 
-    const rcq = formData.metricas.circunferencias.cintura / formData.metricas.circunferencias.quadril;
-    formData.paciente.rcq = parseFloat(rcq.toFixed(2));
+    // Circunferências
+    const circunferencias = {
+        pescoco: parseFloat(document.getElementById('circ-pescoco').value),
+        ombros: parseFloat(document.getElementById('circ-ombros').value),
+        torax: parseFloat(document.getElementById('circ-torax').value),
+        cintura: parseFloat(document.getElementById('circ-cintura').value),
+        abdomen: parseFloat(document.getElementById('circ-abdomen').value),
+        quadril: parseFloat(document.getElementById('circ-quadril').value),
+        biceps_direito: parseFloat(document.getElementById('circ-biceps-direito').value),
+        biceps_esquerdo: parseFloat(document.getElementById('circ-biceps-esquerdo').value),
+        antebraco_direito: parseFloat(document.getElementById('circ-antebraco-direito').value),
+        antebraco_esquerdo: parseFloat(document.getElementById('circ-antebraco-esquerdo').value),
+        coxa_direita: parseFloat(document.getElementById('circ-coxa-direita').value),
+        coxa_esquerda: parseFloat(document.getElementById('circ-coxa-esquerda').value),
+        panturrilha_direita: parseFloat(document.getElementById('circ-panturrilha-direita').value),
+        panturrilha_esquerda: parseFloat(document.getElementById('circ-panturrilha-esquerda').value)
+    };
+
+    // Dobras Cutâneas
+    const dobrasCutaneas = {
+        triceps: parseFloat(document.getElementById('dobra-triceps').value),
+        subescapular: parseFloat(document.getElementById('dobra-subescapular').value),
+        peitoral: parseFloat(document.getElementById('dobra-peitoral').value),
+        axilar_media: parseFloat(document.getElementById('dobra-axilar-media').value),
+        supra_iliaca: parseFloat(document.getElementById('dobra-supra-iliaca').value),
+        abdominal: parseFloat(document.getElementById('dobra-abdominal').value),
+        coxa: parseFloat(document.getElementById('dobra-coxa').value)
+    };
+
+    // Montar o payload final exatamente como você envia
+    const formData = {
+        user_id: currentUser.id,
+        user_email: currentUser.emailAddresses[0].emailAddress,
+        dados_pessoais: dadosPessoais,
+        bioimpedancia: bioimpedancia,
+        circunferencias: circunferencias,
+        dobras_cutaneas: dobrasCutaneas
+    };
 
     showBioLoading();
 
     try {
-        console.log('📤 Enviando análise de bioimpedância:', formData);
+        console.log('📤 Enviando análise de bioimpedância:', JSON.stringify(formData, null, 2));
 
         const response = await fetch(BIOIMPEDANCIA_URL, {
             method: 'POST',
@@ -85,7 +116,7 @@ async function handleBioimpedanciaSubmit(e) {
         });
 
         if (!response.ok) {
-            throw new Error('Erro ao processar bioimpedância');
+            throw new Error(`Erro HTTP: ${response.status}`);
         }
 
         const data = await response.json();
