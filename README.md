@@ -1,36 +1,57 @@
-# 💪 Gerador de Treino com IA
+# 💪 MottaFit - Plataforma Completa de Fitness com IA
 
-Aplicação web para gerar treinos personalizados usando Inteligência Artificial.
+Plataforma web completa para gerar treinos personalizados e análises de bioimpedância usando Inteligência Artificial.
 
 ## 📁 Estrutura do Projeto
 
 ```
 n8n-test-front/
+├── api/
+│   └── n8n-proxy.js                    # Proxy para APIs n8n
 ├── css/
-│   ├── main.css      # Estilos da página principal
-│   └── treino.css    # Estilos da página de visualização
+│   ├── main.css                        # Estilos da página principal
+│   ├── treino.css                      # Estilos da página de treino
+│   ├── comparacao.css                  # Estilos da comparação
+│   └── relatorio-bioimpedancia.css     # Estilos do relatório
 ├── js/
-│   ├── main.js       # JavaScript da página principal
-│   └── treino.js     # JavaScript da página de visualização
-├── index.html        # Página principal (gerador)
-├── treino.html       # Página de visualização de treino
-└── README.md         # Documentação
+│   ├── main.js                         # JavaScript principal
+│   ├── treino.js                       # JavaScript de treino
+│   ├── bioimpedancia-comparador.js     # Comparação de avaliações
+│   └── relatorio-bioimpedancia.js      # Relatórios detalhados
+├── index.html                          # Página principal
+├── treino.html                         # Visualização de treino
+├── comparar-bioimpedancia.html         # Comparação de avaliações
+├── relatorio-bioimpedancia.html        # Relatório detalhado
+└── README.md                           # Documentação
 ```
 
 ## 🚀 Funcionalidades
 
-### Página Principal (index.html)
-- **Autenticação**: Sistema de login com Clerk
-- **Formulário**: Coleta dados do usuário (idade, peso, objetivo, etc.)
-- **Geração de Treino**: Integração com API para gerar treino personalizado
-- **Histórico**: Visualização de treinos anteriores
-- **Compartilhamento**: Links para compartilhar treinos
+### 🏠 Página Principal (index.html)
+- **🔐 Autenticação**: Login com Google/Microsoft via Clerk
+- **🏋️ Gerador de Treino**: IA personalizada baseada em dados do usuário
+- **📚 Histórico de Treinos**: Visualização e gerenciamento de treinos anteriores
+- **⚖️ Análise de Bioimpedância**: Relatórios completos de composição corporal
+- **🔗 Compartilhamento**: Links diretos para treinos e relatórios
 
-### Página de Visualização (treino.html)
-- **Visualização Completa**: Exibe treino detalhado
-- **Responsivo**: Adaptado para mobile e desktop
-- **Compartilhamento**: Botões para compartilhar via WhatsApp
-- **Impressão Amigável**: Layout otimizado
+### 🏋️ Página de Treino (treino.html)
+- **📋 Visualização Completa**: Treino detalhado com exercícios, séries e dicas
+- **📱 Design Responsivo**: Otimizado para mobile e desktop
+- **📤 Compartilhamento**: WhatsApp e redes sociais
+- **🖨️ Print Friendly**: Layout otimizado para impressão
+
+### ⚖️ Relatório de Bioimpedância (relatorio-bioimpedancia.html)
+- **📊 Análise Completa**: IMC, % gordura, massa muscular, RCQ
+- **📏 Circunferências**: Medidas detalhadas de todo o corpo
+- **📐 Dobras Cutâneas**: Análise de composição corporal
+- **🎯 Classificações**: Status de saúde com códigos de cores
+- **💡 Resumo Executivo**: Interpretação automática dos dados
+
+### 📈 Comparação de Bioimpedância (comparar-bioimpedancia.html)
+- **🔄 Evolução Temporal**: Compare duas avaliações diferentes
+- **📊 Métricas de Progresso**: Visualização de melhorias e mudanças
+- **🎯 Análise de Tendências**: Identificação automática de progressos
+- **📋 Relatório Comparativo**: Diferenças percentuais e absolutas
 
 ## 🎨 Melhorias Implementadas
 
