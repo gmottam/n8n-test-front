@@ -1,4 +1,4 @@
-const API_URL = 'https://gmottam.app.n8n.cloud/webhook-test/consultar-treino';
+const API_URL = 'https://gmottam.app.n8n.cloud/webhook/consultar-treino';
 
 
 document.addEventListener('DOMContentLoaded', () => {
