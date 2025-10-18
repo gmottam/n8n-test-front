@@ -37,6 +37,7 @@
             <div class="tabs">
                 <button class="tab active" onclick="switchTab('gerar')">🏋️ Gerar Treino</button>
                 <button class="tab" onclick="switchTab('historico')">📚 Meus Treinos</button>
+                <button class="tab" onclick="switchTab('bioimpedancia')">⚖️ Bioimpedância</button>
             </div>
 
             <div id="tab-gerar" class="tab-content active">
@@ -151,6 +152,105 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <div id="tab-bioimpedancia" class="tab-content">
+                <div class="card" id="bioimpedanciaCard">
+                    <h2 style="margin-bottom: 20px;">⚖️ Análise de Bioimpedância</h2>
+                    <p style="color: #666; margin-bottom: 30px;">Preencha os dados para gerar seu relatório completo de composição corporal</p>
+                    
+                    <form id="bioimpedanciaForm">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="bio-nome">Nome Completo *</label>
+                                <input type="text" id="bio-nome" required placeholder="Ex: João Silva">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="bio-idade">Idade *</label>
+                                <input type="number" id="bio-idade" min="16" max="100" required placeholder="Ex: 27">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="bio-peso">Peso (kg) *</label>
+                                <input type="number" id="bio-peso" min="30" max="300" step="0.1" required placeholder="Ex: 75.5">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="bio-altura">Altura (cm) *</label>
+                                <input type="number" id="bio-altura" min="100" max="250" required placeholder="Ex: 175">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Sexo *</label>
+                                <div class="radio-group">
+                                    <label class="radio-option">
+                                        <input type="radio" name="bio-sexo" value="masculino" required>
+                                        <span>Masculino</span>
+                                    </label>
+                                    <label class="radio-option">
+                                        <input type="radio" name="bio-sexo" value="feminino" required>
+                                        <span>Feminino</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="bio-gordura">% Gordura Corporal *</label>
+                                <input type="number" id="bio-gordura" min="3" max="50" step="0.1" required placeholder="Ex: 15.2">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="bio-musculo">Massa Muscular (kg) *</label>
+                                <input type="number" id="bio-musculo" min="10" max="100" step="0.1" required placeholder="Ex: 45.8">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="bio-agua">% Água Corporal *</label>
+                                <input type="number" id="bio-agua" min="30" max="80" step="0.1" required placeholder="Ex: 62.5">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="bio-metabolismo">Taxa Metabólica Basal *</label>
+                                <input type="number" id="bio-metabolismo" min="800" max="3000" required placeholder="Ex: 1850">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="bio-visceral">Gordura Visceral (nível) *</label>
+                                <input type="number" id="bio-visceral" min="1" max="30" required placeholder="Ex: 8">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="bio-ossos">Massa Óssea (kg)</label>
+                                <input type="number" id="bio-ossos" min="1" max="10" step="0.1" placeholder="Ex: 3.2">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="bio-proteina">% Proteína</label>
+                                <input type="number" id="bio-proteina" min="10" max="30" step="0.1" placeholder="Ex: 18.5">
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label for="bio-observacoes">Observações Adicionais</label>
+                                <textarea id="bio-observacoes" rows="3" placeholder="Ex: Pratica exercícios 4x por semana, dieta balanceada..."></textarea>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn">
+                            📊 Gerar Relatório de Bioimpedância
+                        </button>
+                    </form>
+                </div>
+
+                <div class="card loading" id="bioLoading">
+                    <div class="spinner"></div>
+                    <h3>📊 Gerando seu relatório de bioimpedância...</h3>
+                    <p>Analisando sua composição corporal</p>
+                </div>
+
+                <div class="error" id="bioError"></div>
+
+                <div class="card result" id="bioResult"></div>
             </div>
         </div>
     </div>
