@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comparar Bioimpedância - MottaFit</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
+    <link rel="stylesheet" href="css/comparacao.css">
+
+    <script async
+            crossorigin="anonymous"
+            data-clerk-publishable-key="pk_test_dG91Y2hpbmctbG9uZ2hvcm4tNTMuY2xlcmsuYWNjb3VudHMuZGV2JA"
+            src="https://accounts.clerk.com/npm/@clerk/clerk-js@latest/dist/clerk.browser.js"
+            type="text/javascript"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Comparar Bioimpedância</h1>
+            <p>Acompanhe sua evolução</p>
+        </div>
+
+        <div class="card" id="seletorCard">
+            <h2>Selecione duas avaliações para comparar</h2>
+
+            <div class="form-group">
+                <label for="avaliacao1">Avaliação Anterior *</label>
+                <select id="avaliacao1" required>
+                    <option value="">Carregando...</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="avaliacao2">Avaliação Atual *</label>
+                <select id="avaliacao2" required>
+                    <option value="">Carregando...</option>
+                </select>
+            </div>
+
+            <button class="btn" onclick="compararAvaliacoes()">🔍 Comparar</button>
+        </div>
+
+        <div class="card loading" id="loading">
+            <div class="spinner"></div>
+            <h3>Carregando suas avaliações...</h3>
+        </div>
+
+        <div class="error" id="error"></div>
+
+        <div id="resultadoComparacao"></div>
+
+        <div class="actions" id="actions" style="display: none;">
+            <button class="btn btn-secondary" onclick="novaComparacao()">🔄 Nova Comparação</button>
+            <a href="/" class="btn btn-secondary">🏠 Voltar</a>
+        </div>
+    </div>
+
+    <script src="js/bioimpedancia-comparador.js"></script>
+</body>
+</html>
