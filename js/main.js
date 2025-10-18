@@ -1,4 +1,4 @@
-const WEBHOOK_URL = 'https://gmottam.app.n8n.cloud/webhook/webhook-test/gerar-treino';
+const WEBHOOK_URL = 'https://gmottam.app.n8n.cloud/webhook/webhook/gerar-treino';
 const HISTORICO_URL = 'https://gmottam.app.n8n.cloud/webhook/meus-treinos';
 const BIOIMPEDANCIA_URL = 'https://gmottam.app.n8n.cloud/webhook/gerar-bioimpedancia';
 

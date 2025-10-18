@@ -1,4 +1,4 @@
-﻿const CONSULTAR_BIOIMPEDANCIA_URL = 'https://gmottam.app.n8n.cloud/webhook-test/consultar-bioimpedancia';
+﻿const CONSULTAR_BIOIMPEDANCIA_URL = 'https://gmottam.app.n8n.cloud/webhook/consultar-bioimpedancia';
 
 let dadosBioimpedancia = null;
 
