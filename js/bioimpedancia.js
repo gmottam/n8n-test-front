@@ -1,182 +1,122 @@
-const API_URL = 'https://gmottam.app.n8n.cloud/webhook-test/consultar-bioimpedancia';
+const BIOIMPEDANCIA_URL = 'https://gmottam.app.n8n.cloud/webhook-test/gerar-bioimpedancia';
 
-let dadosBioimpedancia = null;
-
-window.addEventListener('load', async () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const idAvaliacao = urlParams.get('id');
-    
-    if (!idAvaliacao) {
-        showError('ID da avaliação não encontrado na URL');
-        return;
-    }
-    
-    await carregarBioimpedancia(idAvaliacao);
+document.addEventListener('DOMContentLoaded', () => {
+    setupEventListeners();
 });
 
-async function carregarBioimpedancia(idAvaliacao) {
-    showLoading();
-    
+function setupEventListeners() {
+    document.getElementById('bioimpedanciaForm')?.addEventListener('submit', handleBioimpedanciaSubmit);
+}
+
+async function handleBioimpedanciaSubmit(e) {
+    e.preventDefault();
+
+    const formData = {
+        paciente: {
+            nome: document.getElementById('bio-nome').value,
+            sexo: document.querySelector('input[name="bio-sexo"]:checked').value,
+            idade: parseInt(document.getElementById('bio-idade').value),
+            peso: parseFloat(document.getElementById('bio-peso').value),
+            altura: parseInt(document.getElementById('bio-altura').value),
+            data_avaliacao: new Date().toISOString().split('T')[0]
+        },
+
+        metricas: {
+            bioimpedancia: {
+                percentual_gordura: parseFloat(document.getElementById('bio-gordura').value),
+                massa_magra: parseFloat(document.getElementById('bio-massa-magra').value),
+                massa_gorda: parseFloat(document.getElementById('bio-massa-gorda').value),
+                agua_corporal: parseFloat(document.getElementById('bio-agua-corporal').value),
+                massa_muscular: parseFloat(document.getElementById('bio-massa-muscular').value),
+                massa_ossea: parseFloat(document.getElementById('bio-massa-ossea').value),
+                metabolismo_basal: parseInt(document.getElementById('bio-metabolismo-basal').value),
+                gordura_visceral: parseInt(document.getElementById('bio-gordura-visceral').value),
+                idade_metabolica: parseInt(document.getElementById('bio-idade-metabolica').value),
+                proteina: parseFloat(document.getElementById('bio-proteina').value)
+            },
+
+            circunferencias: {
+                pescoco: parseFloat(document.getElementById('bio-pescoco').value),
+                ombros: parseFloat(document.getElementById('bio-ombros').value),
+                torax: parseFloat(document.getElementById('bio-torax').value),
+                cintura: parseFloat(document.getElementById('bio-cintura').value),
+                abdomen: parseFloat(document.getElementById('bio-abdomen').value),
+                quadril: parseFloat(document.getElementById('bio-quadril').value),
+                biceps_direito: parseFloat(document.getElementById('bio-biceps-direito').value),
+                biceps_esquerdo: parseFloat(document.getElementById('bio-biceps-esquerdo').value),
+                antebraco_direito: parseFloat(document.getElementById('bio-antebraco-direito').value),
+                antebraco_esquerdo: parseFloat(document.getElementById('bio-antebraco-esquerdo').value),
+                coxa_direita: parseFloat(document.getElementById('bio-coxa-direita').value),
+                coxa_esquerda: parseFloat(document.getElementById('bio-coxa-esquerda').value),
+                panturrilha_direita: parseFloat(document.getElementById('bio-panturrilha-direita').value),
+                panturrilha_esquerda: parseFloat(document.getElementById('bio-panturrilha-esquerda').value)
+            },
+
+            dobras_cutaneas: {
+                triceps: parseFloat(document.getElementById('bio-triceps').value),
+                subescapular: parseFloat(document.getElementById('bio-subescapular').value),
+                peitoral: parseFloat(document.getElementById('bio-peitoral').value),
+                axilar_media: parseFloat(document.getElementById('bio-axilar-media').value),
+                supra_iliaca: parseFloat(document.getElementById('bio-supra-iliaca').value),
+                abdominal: parseFloat(document.getElementById('bio-abdominal').value),
+                coxa: parseFloat(document.getElementById('bio-coxa-dobra').value)
+            }
+        },
+
+        observacoes: document.getElementById('bio-observacoes').value || 'Sem observações adicionais'
+    };
+
+    // Calcular RCQ (cintura / quadril)
+    const imc = formData.paciente.peso / Math.pow(formData.paciente.altura / 100, 2);
+    formData.paciente.imc = parseFloat(imc.toFixed(1));
+
+    const rcq = formData.metricas.circunferencias.cintura / formData.metricas.circunferencias.quadril;
+    formData.paciente.rcq = parseFloat(rcq.toFixed(2));
+
+    showBioLoading();
+
     try {
-        const response = await fetch(`${API_URL}?id=${idAvaliacao}`);
-        
+        console.log('📤 Enviando análise de bioimpedância:', formData);
+
+        const response = await fetch(BIOIMPEDANCIA_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(formData)
+        });
+
         if (!response.ok) {
-            throw new Error('Erro ao carregar dados');
+            throw new Error('Erro ao processar bioimpedância');
         }
-        
+
         const data = await response.json();
-        dadosBioimpedancia = data;
-        exibirBioimpedancia(data);
-        
+        console.log('✅ Resposta recebida:', data);
+
+        // Aguardar um pouco para garantir que o dados foi salvo
+        setTimeout(() => {
+            const linkRelatorio = `relatorio-bioimpedancia.html?id=${data.id_avaliacao}`;
+            window.location.href = linkRelatorio;
+        }, 1500);
+
     } catch (error) {
-        console.error('Erro:', error);
-        showError('Erro ao carregar relatório. Verifique o ID e tente novamente.');
+        console.error('❌ Erro:', error);
+        showBioError(`❌ Erro ao processar análise: ${error.message}`);
+        document.getElementById('formCard').style.display = 'block';
     } finally {
-        hideLoading();
+        hideBioLoading();
     }
 }
 
-function showLoading() {
-    document.getElementById('loading').classList.add('active');
-    document.getElementById('error').classList.remove('active');
-    document.getElementById('content').classList.remove('active');
+function showBioLoading() {
+    document.getElementById('formCard').style.display = 'none';
+    document.getElementById('bioLoading').classList.add('active');
+    document.getElementById('bioError').classList.remove('active');
 }
 
-function hideLoading() {
-    document.getElementById('loading').classList.remove('active');
+function hideBioLoading() {
+    document.getElementById('bioLoading').classList.remove('active');
 }
 
-function showError(message) {
-    document.getElementById('error').querySelector('p').textContent = message;
-    document.getElementById('error').classList.add('active');
-    document.getElementById('content').classList.remove('active');
-}
-
-function exibirBioimpedancia(data) {
-    // Header
-    document.getElementById('pacienteNome').textContent = data.paciente.nome;
-    document.getElementById('dataAvaliacao').textContent = new Date(data.paciente.data_avaliacao).toLocaleDateString('pt-BR');
-    
-    // Resumo
-    document.getElementById('resumoTexto').textContent = data.analise_detalhada.resumo_executivo;
-    
-    // Métricas principais
-    document.getElementById('imc').textContent = data.paciente.imc;
-    document.getElementById('imcStatus').textContent = data.comparacao_referencias.imc.status;
-    
-    document.getElementById('gordura').textContent = `${data.metricas.bioimpedancia.percentual_gordura}%`;
-    document.getElementById('gorduraStatus').textContent = data.comparacao_referencias.gordura.status;
-    
-    document.getElementById('massaMuscular').textContent = `${data.metricas.bioimpedancia.massa_muscular}kg`;
-    
-    document.getElementById('rcq').textContent = data.paciente.rcq;
-    document.getElementById('rcqStatus').textContent = data.comparacao_referencias.rcq.risco;
-    
-    document.getElementById('gorduraVisceral').textContent = data.metricas.bioimpedancia.gordura_visceral;
-    document.getElementById('visceralStatus').textContent = data.comparacao_referencias.gordura_visceral.risco;
-    
-    document.getElementById('idadeMetabolica').textContent = `${data.metricas.bioimpedancia.idade_metabolica} anos`;
-    
-    // Análise detalhada
-    document.getElementById('analiseIMC').textContent = data.analise_detalhada.composicao_corporal.classificacao_imc;
-    document.getElementById('analiseGordura').textContent = data.analise_detalhada.composicao_corporal.classificacao_gordura;
-    document.getElementById('analiseMassa').textContent = data.analise_detalhada.composicao_corporal.status_massa_muscular;
-    document.getElementById('analiseHidratacao').textContent = data.analise_detalhada.composicao_corporal.status_hidratacao;
-    
-    // Objetivos
-    const objetivos = data.analise_detalhada.objetivos;
-    
-    document.getElementById('pesoCP').textContent = objetivos.curto_prazo.peso_alvo;
-    document.getElementById('gorduraCP').textContent = objetivos.curto_prazo.gordura_alvo;
-    preencherMetas('metasCP', objetivos.curto_prazo.metas_especificas);
-    
-    document.getElementById('pesoMP').textContent = objetivos.medio_prazo.peso_alvo;
-    document.getElementById('gorduraMP').textContent = objetivos.medio_prazo.gordura_alvo;
-    preencherMetas('metasMP', objetivos.medio_prazo.metas_especificas);
-    
-    document.getElementById('pesoLP').textContent = objetivos.longo_prazo.peso_alvo;
-    document.getElementById('gorduraLP').textContent = objetivos.longo_prazo.gordura_alvo;
-    preencherMetas('metasLP', objetivos.longo_prazo.metas_especificas);
-    
-    // Plano nutricional
-    const nutricao = data.analise_detalhada.plano_nutricional;
-    document.getElementById('tmb').textContent = nutricao.metabolismo_basal;
-    document.getElementById('manutencao').textContent = nutricao.calorias_manutencao;
-    document.getElementById('caloriaObjetivo').textContent = nutricao.calorias_objetivo;
-    
-    document.getElementById('proteinas').textContent = nutricao.macronutrientes.proteinas_g;
-    document.getElementById('carboidratos').textContent = nutricao.macronutrientes.carboidratos_g;
-    document.getElementById('gorduras').textContent = nutricao.macronutrientes.gorduras_g;
-    
-    preencherMetas('suplementos', nutricao.suplementacao);
-    
-    // Riscos
-    if (data.analise_detalhada.riscos_saude && data.analise_detalhada.riscos_saude.length > 0) {
-        let riscosHtml = '';
-        data.analise_detalhada.riscos_saude.forEach(risco => {
-            riscosHtml += `
-                <div class="risco-item">
-                    <div class="risco-nivel">Nível: ${risco.nivel}</div>
-                    <div class="risco-categoria">${risco.categoria}</div>
-                    <p><strong>Descrição:</strong> ${risco.descricao}</p>
-                    <p><strong>Recomendação:</strong> ${risco.recomendacao}</p>
-                </div>
-            `;
-        });
-        document.getElementById('riscosContent').innerHTML = riscosHtml;
-    } else {
-        document.getElementById('riscosCard').style.display = 'none';
-    }
-    
-    document.getElementById('content').classList.add('active');
-}
-
-function preencherMetas(elementId, metas) {
-    const ul = document.getElementById(elementId);
-    ul.innerHTML = '';
-    metas.forEach(meta => {
-        const li = document.createElement('li');
-        li.textContent = meta;
-        ul.appendChild(li);
-    });
-}
-
-function gerarPDF() {
-    if (!dadosBioimpedancia) {
-        alert('❌ Dados não carregados!');
-        return;
-    }
-    
-    alert('🚧 Funcionalidade em desenvolvimento!\n\nEm breve você poderá gerar e baixar o PDF do relatório.');
-}
-
-function compartilhar() {
-    if (!dadosBioimpedancia) {
-        alert('❌ Dados não carregados!');
-        return;
-    }
-    
-    const link = window.location.href;
-    const texto = `Confira meu relatório de bioimpedância! 📊`;
-    
-    if (navigator.share) {
-        navigator.share({
-            title: 'Relatório de Bioimpedância',
-            text: texto,
-            url: link
-        }).catch(() => {
-            copiarLink(link, texto);
-        });
-    } else {
-        copiarLink(link, texto);
-    }
-}
-
-function copiarLink(link, texto) {
-    navigator.clipboard.writeText(link).then(() => {
-        if (confirm('✅ Link copiado!\n\nCompartilhar no WhatsApp?')) {
-            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(texto + '\n\n' + link)}`;
-            window.open(whatsappUrl, '_blank');
-        }
-    });
+function showBioError(message) {
+    document.getElementById('bioError').textContent = message;
+    document.getElementById('bioError').classList.add('active');
 }
