@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório de Bioimpedância - MottaFit</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚖️</text></svg>">
+    <link rel="stylesheet" href="css/bioimpedancia.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚖️ Relatório de Bioimpedância</h1>
+            <div class="header-info">
+                <span id="pacienteNome"></span>
+                <span id="dataAvaliacao"></span>
+            </div>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <h3>📊 Carregando relatório...</h3>
+        </div>
+
+        <div class="error" id="error">
+            <h3>❌ Erro ao carregar relatório</h3>
+            <p>Verifique o ID da avaliação e tente novamente.</p>
+        </div>
+
+        <div class="content" id="content">
+            <!-- Resumo Executivo -->
+            <div class="card resumo">
+                <h2>📋 Resumo Executivo</h2>
+                <p id="resumoTexto"></p>
+            </div>
+
+            <!-- Métricas Principais -->
+            <div class="metricas-grid">
+                <div class="metrica-card">
+                    <div class="metrica-label">IMC</div>
+                    <div class="metrica-value" id="imc"></div>
+                    <div class="metrica-status" id="imcStatus"></div>
+                </div>
+                <div class="metrica-card">
+                    <div class="metrica-label">% Gordura</div>
+                    <div class="metrica-value" id="gordura"></div>
+                    <div class="metrica-status" id="gorduraStatus"></div>
+                </div>
+                <div class="metrica-card">
+                    <div class="metrica-label">Massa Muscular</div>
+                    <div class="metrica-value" id="massaMuscular"></div>
+                </div>
+                <div class="metrica-card">
+                    <div class="metrica-label">RCQ</div>
+                    <div class="metrica-value" id="rcq"></div>
+                    <div class="metrica-status" id="rcqStatus"></div>
+                </div>
+                <div class="metrica-card">
+                    <div class="metrica-label">Gordura Visceral</div>
+                    <div class="metrica-value" id="gorduraVisceral"></div>
+                    <div class="metrica-status" id="visceralStatus"></div>
+                </div>
+                <div class="metrica-card">
+                    <div class="metrica-label">Idade Metabólica</div>
+                    <div class="metrica-value" id="idadeMetabolica"></div>
+                </div>
+            </div>
+
+            <!-- Análise Detalhada -->
+            <div class="card">
+                <h2>🔬 Análise da Composição Corporal</h2>
+                <div class="analise-item">
+                    <h3>IMC</h3>
+                    <p id="analiseIMC"></p>
+                </div>
+                <div class="analise-item">
+                    <h3>Gordura Corporal</h3>
+                    <p id="analiseGordura"></p>
+                </div>
+                <div class="analise-item">
+                    <h3>Massa Muscular</h3>
+                    <p id="analiseMassa"></p>
+                </div>
+                <div class="analise-item">
+                    <h3>Hidratação</h3>
+                    <p id="analiseHidratacao"></p>
+                </div>
+            </div>
+
+            <!-- Objetivos -->
+            <div class="card">
+                <h2>🎯 Objetivos e Metas</h2>
+                <div class="objetivos-grid">
+                    <div class="objetivo-card">
+                        <h3>Curto Prazo (1-3 meses)</h3>
+                        <div class="objetivo-meta">
+                            <strong>Peso:</strong> <span id="pesoCP"></span>
+                        </div>
+                        <div class="objetivo-meta">
+                            <strong>Gordura:</strong> <span id="gorduraCP"></span>
+                        </div>
+                        <ul id="metasCP"></ul>
+                    </div>
+                    <div class="objetivo-card">
+                        <h3>Médio Prazo (6 meses)</h3>
+                        <div class="objetivo-meta">
+                            <strong>Peso:</strong> <span id="pesoMP"></span>
+                        </div>
+                        <div class="objetivo-meta">
+                            <strong>Gordura:</strong> <span id="gorduraMP"></span>
+                        </div>
+                        <ul id="metasMP"></ul>
+                    </div>
+                    <div class="objetivo-card">
+                        <h3>Longo Prazo (1 ano)</h3>
+                        <div class="objetivo-meta">
+                            <strong>Peso:</strong> <span id="pesoLP"></span>
+                        </div>
+                        <div class="objetivo-meta">
+                            <strong>Gordura:</strong> <span id="gorduraLP"></span>
+                        </div>
+                        <ul id="metasLP"></ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Plano Nutricional -->
+            <div class="card">
+                <h2>🍎 Plano Nutricional</h2>
+                <div class="nutricao-grid">
+                    <div class="nutricao-item">
+                        <strong>TMB:</strong> <span id="tmb"></span> kcal
+                    </div>
+                    <div class="nutricao-item">
+                        <strong>Manutenção:</strong> <span id="manutencao"></span>
+                    </div>
+                    <div class="nutricao-item">
+                        <strong>Objetivo:</strong> <span id="caloriaObjetivo"></span>
+                    </div>
+                </div>
+                <div class="macros-grid">
+                    <div class="macro-card">
+                        <div class="macro-label">Proteínas</div>
+                        <div class="macro-value" id="proteinas"></div>
+                    </div>
+                    <div class="macro-card">
+                        <div class="macro-label">Carboidratos</div>
+                        <div class="macro-value" id="carboidratos"></div>
+                    </div>
+                    <div class="macro-card">
+                        <div class="macro-label">Gorduras</div>
+                        <div class="macro-value" id="gorduras"></div>
+                    </div>
+                </div>
+                <div class="suplementacao">
+                    <h3>💊 Suplementação</h3>
+                    <ul id="suplementos"></ul>
+                </div>
+            </div>
+
+            <!-- Riscos -->
+            <div class="card riscos" id="riscosCard">
+                <h2>⚠️ Riscos à Saúde</h2>
+                <div id="riscosContent"></div>
+            </div>
+
+            <!-- Ações -->
+            <div class="actions">
+                <button class="btn" onclick="gerarPDF()">📄 Gerar PDF</button>
+                <button class="btn btn-secondary" onclick="compartilhar()">🔗 Compartilhar</button>
+                <a href="/" class="btn btn-secondary">🏠 Voltar ao Início</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/bioimpedancia.js"></script>
+</body>
+</html>

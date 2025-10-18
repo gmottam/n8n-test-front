@@ -1,5 +1,6 @@
 const WEBHOOK_URL = 'https://gmottam.app.n8n.cloud/webhook/webhook-test/gerar-treino';
 const HISTORICO_URL = 'https://gmottam.app.n8n.cloud/webhook/meus-treinos';
+const BIOIMPEDANCIA_URL = 'https://gmottam.app.n8n.cloud/webhook-test/gerar-bioimpedancia';
 
 let clerk;
 let currentUser = null;
@@ -465,42 +466,84 @@ async function handleBioimpedanciaSubmit(e) {
     const formData = {
         user_id: currentUser.id,
         user_email: currentUser.emailAddresses[0].emailAddress,
-        nome: document.getElementById('bio-nome').value,
-        idade: parseInt(document.getElementById('bio-idade').value),
-        peso: parseFloat(document.getElementById('bio-peso').value),
-        altura: parseInt(document.getElementById('bio-altura').value),
-        sexo: document.querySelector('input[name="bio-sexo"]:checked').value,
-        gordura_corporal: parseFloat(document.getElementById('bio-gordura').value),
-        massa_muscular: parseFloat(document.getElementById('bio-musculo').value),
-        agua_corporal: parseFloat(document.getElementById('bio-agua').value),
-        taxa_metabolica: parseInt(document.getElementById('bio-metabolismo').value),
-        gordura_visceral: parseInt(document.getElementById('bio-visceral').value),
-        massa_ossea: parseFloat(document.getElementById('bio-ossos').value) || null,
-        proteina: parseFloat(document.getElementById('bio-proteina').value) || null,
-        observacoes: document.getElementById('bio-observacoes').value || null
+        
+        dados_pessoais: {
+            nome: document.getElementById('bio-nome').value,
+            idade: parseInt(document.getElementById('bio-idade').value),
+            peso: parseFloat(document.getElementById('bio-peso').value),
+            altura: parseInt(document.getElementById('bio-altura').value),
+            sexo: document.querySelector('input[name="bio-sexo"]:checked').value
+        },
+        
+        bioimpedancia: {
+            percentual_gordura: parseFloat(document.getElementById('bio-percentual-gordura').value),
+            massa_magra: parseFloat(document.getElementById('bio-massa-magra').value),
+            massa_gorda: parseFloat(document.getElementById('bio-massa-gorda').value),
+            agua_corporal: parseFloat(document.getElementById('bio-agua-corporal').value),
+            massa_muscular: parseFloat(document.getElementById('bio-massa-muscular').value),
+            massa_ossea: parseFloat(document.getElementById('bio-massa-ossea').value),
+            metabolismo_basal: parseInt(document.getElementById('bio-metabolismo-basal').value),
+            gordura_visceral: parseInt(document.getElementById('bio-gordura-visceral').value),
+            idade_metabolica: parseInt(document.getElementById('bio-idade-metabolica').value),
+            proteina: parseFloat(document.getElementById('bio-proteina').value)
+        },
+        
+        circunferencias: {
+            pescoco: parseFloat(document.getElementById('bio-pescoco').value),
+            ombros: parseFloat(document.getElementById('bio-ombros').value),
+            torax: parseFloat(document.getElementById('bio-torax').value),
+            cintura: parseFloat(document.getElementById('bio-cintura').value),
+            abdomen: parseFloat(document.getElementById('bio-abdomen').value),
+            quadril: parseFloat(document.getElementById('bio-quadril').value),
+            biceps_direito: parseFloat(document.getElementById('bio-biceps-direito').value),
+            biceps_esquerdo: parseFloat(document.getElementById('bio-biceps-esquerdo').value),
+            antebraco_direito: parseFloat(document.getElementById('bio-antebraco-direito').value),
+            antebraco_esquerdo: parseFloat(document.getElementById('bio-antebraco-esquerdo').value),
+            coxa_direita: parseFloat(document.getElementById('bio-coxa-direita').value),
+            coxa_esquerda: parseFloat(document.getElementById('bio-coxa-esquerda').value),
+            panturrilha_direita: parseFloat(document.getElementById('bio-panturrilha-direita').value),
+            panturrilha_esquerda: parseFloat(document.getElementById('bio-panturrilha-esquerda').value)
+        },
+        
+        dobras_cutaneas: {
+            triceps: parseFloat(document.getElementById('bio-triceps').value),
+            subescapular: parseFloat(document.getElementById('bio-subescapular').value),
+            peitoral: parseFloat(document.getElementById('bio-peitoral').value),
+            axilar_media: parseFloat(document.getElementById('bio-axilar-media').value),
+            supra_iliaca: parseFloat(document.getElementById('bio-supra-iliaca').value),
+            abdominal: parseFloat(document.getElementById('bio-abdominal').value),
+            coxa: parseFloat(document.getElementById('bio-coxa-dobra').value)
+        }
     };
 
     showBioLoading();
 
     try {
-        // Simular processamento (substituir pela API real)
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        
-        // Dados simulados para demonstração
-        const resultado = {
-            imc: (formData.peso / Math.pow(formData.altura / 100, 2)).toFixed(1),
-            classificacao_imc: getClassificacaoIMC(formData.peso / Math.pow(formData.altura / 100, 2)),
-            gordura_ideal: formData.sexo === 'masculino' ? '10-18%' : '16-25%',
-            status_gordura: getStatusGordura(formData.gordura_corporal, formData.sexo),
-            agua_ideal: formData.sexo === 'masculino' ? '55-65%' : '45-60%',
-            status_agua: getStatusAgua(formData.agua_corporal, formData.sexo),
-            status_visceral: getStatusVisceral(formData.gordura_visceral),
-            recomendacoes: gerarRecomendacoes(formData)
-        };
+        console.log('Enviando dados de bioimpedância:', formData);
 
-        exibirResultadoBioimpedancia({ ...formData, ...resultado });
+        const response = await fetch(BIOIMPEDANCIA_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(formData)
+        });
+
+        if (!response.ok) {
+            throw new Error('Erro ao processar bioimpedância');
+        }
+
+        const data = await response.json();
+        
+        // Redirecionar para a página de relatório
+        const link = `/bioimpedancia.html?id=${data.id_avaliacao}`;
+        window.open(link, '_blank');
+        
+        // Resetar formulário
+        document.getElementById('bioimpedanciaCard').style.display = 'block';
+        document.getElementById('bioResult').classList.remove('active');
+        document.getElementById('bioimpedanciaForm').reset();
 
     } catch (error) {
+        console.error('Erro:', error);
         showBioError('❌ Erro ao processar análise. Tente novamente.');
         document.getElementById('bioimpedanciaCard').style.display = 'block';
     } finally {
@@ -571,121 +614,7 @@ function gerarRecomendacoes(dados) {
     return recomendacoes;
 }
 
-function exibirResultadoBioimpedancia(dados) {
-    const resultDiv = document.getElementById('bioResult');
-    
-    let html = `
-        <div class="success-message">
-            <span style="font-size: 2rem;">📊</span>
-            <div>
-                <strong>Análise de Bioimpedância Concluída!</strong>
-                <div style="font-size: 0.9rem; opacity: 0.9; margin-top: 5px;">
-                    ${dados.nome} • ${new Date().toLocaleDateString('pt-BR')}
-                </div>
-            </div>
-        </div>
 
-        <div class="bio-overview">
-            <div class="bio-card">
-                <div class="bio-label">IMC</div>
-                <div class="bio-value">${dados.imc}</div>
-            </div>
-            <div class="bio-card">
-                <div class="bio-label">% Gordura</div>
-                <div class="bio-value">${dados.gordura_corporal}%</div>
-            </div>
-            <div class="bio-card">
-                <div class="bio-label">Massa Muscular</div>
-                <div class="bio-value">${dados.massa_muscular}kg</div>
-            </div>
-            <div class="bio-card">
-                <div class="bio-label">% Água</div>
-                <div class="bio-value">${dados.agua_corporal}%</div>
-            </div>
-            <div class="bio-card">
-                <div class="bio-label">TMB</div>
-                <div class="bio-value">${dados.taxa_metabolica}</div>
-            </div>
-        </div>
-
-        <div class="bio-section">
-            <h3>📋 Composição Corporal</h3>
-            <div class="bio-item">
-                <span class="bio-item-label">IMC</span>
-                <div>
-                    <span class="bio-item-value">${dados.imc}</span>
-                    <span class="bio-status ${dados.imc < 25 ? 'bom' : 'atencao'}">${dados.classificacao_imc}</span>
-                </div>
-            </div>
-            <div class="bio-item">
-                <span class="bio-item-label">Gordura Corporal</span>
-                <div>
-                    <span class="bio-item-value">${dados.gordura_corporal}%</span>
-                    <span class="bio-status ${getStatusClass(dados.status_gordura)}">${dados.status_gordura}</span>
-                </div>
-            </div>
-            <div class="bio-item">
-                <span class="bio-item-label">Água Corporal</span>
-                <div>
-                    <span class="bio-item-value">${dados.agua_corporal}%</span>
-                    <span class="bio-status ${dados.status_agua === 'Normal' ? 'bom' : 'atencao'}">${dados.status_agua}</span>
-                </div>
-            </div>
-            <div class="bio-item">
-                <span class="bio-item-label">Gordura Visceral</span>
-                <div>
-                    <span class="bio-item-value">Nível ${dados.gordura_visceral}</span>
-                    <span class="bio-status ${getStatusClass(dados.status_visceral)}">${dados.status_visceral}</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="bio-section">
-            <h3>🎯 Valores de Referência</h3>
-            <div class="bio-item">
-                <span class="bio-item-label">Gordura Ideal (${dados.sexo})</span>
-                <span class="bio-item-value">${dados.gordura_ideal}</span>
-            </div>
-            <div class="bio-item">
-                <span class="bio-item-label">Água Ideal (${dados.sexo})</span>
-                <span class="bio-item-value">${dados.agua_ideal}</span>
-            </div>
-            <div class="bio-item">
-                <span class="bio-item-label">Taxa Metabólica Basal</span>
-                <span class="bio-item-value">${dados.taxa_metabolica} kcal/dia</span>
-            </div>
-        </div>
-    `;
-
-    if (dados.recomendacoes.length > 0) {
-        html += `
-            <div class="observacoes">
-                <h3>💡 Recomendações</h3>
-                ${dados.recomendacoes.map(rec => `
-                    <div class="observacao-item">
-                        <strong>•</strong> ${rec}
-                    </div>
-                `).join('')}
-            </div>
-        `;
-    }
-
-    html += `
-        <div class="actions">
-            <button class="btn" onclick="gerarPDFBioimpedancia()">
-                📄 Gerar PDF do Relatório
-            </button>
-            <button class="btn btn-secondary" onclick="novaBioimpedancia()">
-                🔄 Nova Análise
-            </button>
-        </div>
-    `;
-
-    resultDiv.innerHTML = html;
-    resultDiv.classList.add('active');
-    
-    window.bioimpedanciaAtual = dados;
-}
 
 function getStatusClass(status) {
     const statusMap = {
